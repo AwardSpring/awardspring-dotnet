@@ -15,7 +15,7 @@ public partial class AwardspringApiClient : IAwardspringApiClient
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "AwardSpring.Net" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "AwardSpring.Net/0.1.2" },
+                { "User-Agent", "AwardSpring.Net/0.1.3" },
             }
         );
         foreach (var header in platformHeaders)
