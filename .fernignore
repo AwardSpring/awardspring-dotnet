@@ -1,1 +1,12 @@
 # Specify files that shouldn't be modified by Fern
+
+# fern-csharp-sdk builds the csproj property by property and has no code path for
+# <Description> or <Authors> (see getPropertyGroups in generators/csharp/base/src/project/
+# CsharpProject.ts - it emits only Version, PackageReadmeFile, the license, PackageProjectUrl
+# and PolySharp). No generators.yml key can supply them, so they live in Custom.props, which
+# the generated csproj already imports conditionally.
+#
+# This entry is load-bearing: the generator unconditionally rewrites Custom.props from its
+# stub template on every run, so without it these properties silently revert and the package
+# goes back to showing MSBuild's default "Package Description" on nuget.org.
+src/AwardSpring.Net/AwardSpring.Net.Custom.props
