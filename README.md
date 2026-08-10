@@ -1,7 +1,7 @@
 # Awardspring C# Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FAwardSpring%2Fawardspring-dotnet)
-[![nuget shield](https://img.shields.io/nuget/v/AwardspringApi)](https://nuget.org/packages/AwardspringApi)
+[![nuget shield](https://img.shields.io/nuget/v/AwardSpring.Net)](https://nuget.org/packages/AwardSpring.Net)
 
 The Awardspring C# library provides convenient access to the Awardspring APIs from C#.
 
@@ -30,7 +30,7 @@ This SDK requires:
 ## Installation
 
 ```sh
-dotnet add package AwardspringApi
+dotnet add package AwardSpring.Net
 ```
 
 ## Reference
@@ -42,7 +42,7 @@ A full reference for this library is available [here](https://github.com/AwardSp
 Instantiate and use the client with the following:
 
 ```csharp
-using AwardspringApi;
+using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = 1 });
@@ -53,7 +53,7 @@ await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { Dono
 This SDK allows you to configure different environments for API requests.
 
 ```csharp
-using AwardspringApi;
+using AwardSpring.Net;
 
 var client = new AwardspringApiClient(clientOptions: new ClientOptions
 {
@@ -67,7 +67,7 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```csharp
-using AwardspringApi;
+using AwardSpring.Net;
 
 try {
     var response = await client.DonorActivities.CreateAsync(...);
@@ -139,7 +139,7 @@ var response = await client.DonorActivities.CreateAsync(
 Access raw HTTP response data (status code, headers, URL) alongside parsed response data using the `.WithRawResponse()` method.
 
 ```csharp
-using AwardspringApi;
+using AwardSpring.Net;
 
 // Access raw response data (status code, headers, etc.) alongside the parsed response
 var result = await client.DonorActivities.CreateAsync(...).WithRawResponse();
@@ -219,7 +219,7 @@ var response = await client.DonorActivities.CreateAsync(
 This SDK uses forward-compatible enums that can handle unknown values gracefully.
 
 ```csharp
-using AwardspringApi;
+using AwardSpring.Net;
 
 // Using a built-in value
 var createDonorActivityV1RequestActivityType = CreateDonorActivityV1RequestActivityType.LoggedEmail;

@@ -1,6 +1,6 @@
 # Reference
 ## Award Cycles
-<details><summary><code>client.AwardCycles.<a href="/src/AwardspringApi/AwardCycles/AwardCyclesClient.cs">ListAsync</a>(ListAwardCyclesRequest { ... }) -> WithRawResponseTask&lt;AwardCycleV1ListResponse&gt;</code></summary>
+<details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">ListAsync</a>(ListAwardCyclesRequest { ... }) -> WithRawResponseTask&lt;AwardCycleV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -59,7 +59,7 @@ await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
 </dl>
 </details>
 
-<details><summary><code>client.AwardCycles.<a href="/src/AwardspringApi/AwardCycles/AwardCyclesClient.cs">GetCurrentAsync</a>() -> WithRawResponseTask&lt;AwardCycleV1&gt;</code></summary>
+<details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">GetCurrentAsync</a>() -> WithRawResponseTask&lt;AwardCycleV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -103,7 +103,7 @@ await client.AwardCycles.GetCurrentAsync();
 </details>
 
 ## Donor Activities
-<details><summary><code>client.DonorActivities.<a href="/src/AwardspringApi/DonorActivities/DonorActivitiesClient.cs">ListAsync</a>(ListDonorActivitiesRequest { ... }) -> WithRawResponseTask&lt;DonorActivityV1ListResponse&gt;</code></summary>
+<details><summary><code>client.DonorActivities.<a href="/src/AwardSpring.Net/DonorActivities/DonorActivitiesClient.cs">ListAsync</a>(ListDonorActivitiesRequest { ... }) -> WithRawResponseTask&lt;DonorActivityV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -143,7 +143,7 @@ await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId 
 </dl>
 </details>
 
-<details><summary><code>client.DonorActivities.<a href="/src/AwardspringApi/DonorActivities/DonorActivitiesClient.cs">CreateAsync</a>(CreateDonorActivityV1Request { ... }) -> WithRawResponseTask&lt;CreateDonorActivityV1Response&gt;</code></summary>
+<details><summary><code>client.DonorActivities.<a href="/src/AwardSpring.Net/DonorActivities/DonorActivitiesClient.cs">CreateAsync</a>(CreateDonorActivityV1Request { ... }) -> WithRawResponseTask&lt;CreateDonorActivityV1Response&gt;</code></summary>
 <dl>
 <dd>
 
@@ -217,7 +217,7 @@ await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { Dono
 </dl>
 </details>
 
-<details><summary><code>client.DonorActivities.<a href="/src/AwardspringApi/DonorActivities/DonorActivitiesClient.cs">GetAsync</a>(GetDonorActivitiesRequest { ... }) -> WithRawResponseTask&lt;DonorActivityV1&gt;</code></summary>
+<details><summary><code>client.DonorActivities.<a href="/src/AwardSpring.Net/DonorActivities/DonorActivitiesClient.cs">GetAsync</a>(GetDonorActivitiesRequest { ... }) -> WithRawResponseTask&lt;DonorActivityV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -260,7 +260,7 @@ await client.DonorActivities.GetAsync(
 </details>
 
 ## Donors
-<details><summary><code>client.Donors.<a href="/src/AwardspringApi/Donors/DonorsClient.cs">ListAsync</a>(ListDonorsRequest { ... }) -> WithRawResponseTask&lt;DonorListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">ListAsync</a>(ListDonorsRequest { ... }) -> WithRawResponseTask&lt;DonorListItemV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -316,7 +316,7 @@ await client.Donors.ListAsync(new ListDonorsRequest());
 </dl>
 </details>
 
-<details><summary><code>client.Donors.<a href="/src/AwardspringApi/Donors/DonorsClient.cs">CreateAsync</a>(CreateDonorV1Request { ... }) -> WithRawResponseTask&lt;DonorV1&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">CreateAsync</a>(CreateDonorV1Request { ... }) -> WithRawResponseTask&lt;DonorV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -372,7 +372,7 @@ await client.Donors.CreateAsync(new CreateDonorV1Request());
 </dl>
 </details>
 
-<details><summary><code>client.Donors.<a href="/src/AwardspringApi/Donors/DonorsClient.cs">GetAsync</a>(GetDonorsRequest { ... }) -> WithRawResponseTask&lt;DonorDetailV1&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">GetAsync</a>(GetDonorsRequest { ... }) -> WithRawResponseTask&lt;DonorDetailV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -428,7 +428,7 @@ await client.Donors.GetAsync(new GetDonorsRequest { Id = 1 });
 </dl>
 </details>
 
-<details><summary><code>client.Donors.<a href="/src/AwardspringApi/Donors/DonorsClient.cs">UpdateAsync</a>(UpdateDonorV1Request { ... }) -> WithRawResponseTask&lt;DonorV1&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">UpdateAsync</a>(UpdateDonorV1Request { ... }) -> WithRawResponseTask&lt;DonorV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -483,7 +483,7 @@ await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = 1 });
 </dl>
 </details>
 
-<details><summary><code>client.Donors.<a href="/src/AwardspringApi/Donors/DonorsClient.cs">UpdateNotesAsync</a>(UpdateDonorNotesV1Request { ... }) -> WithRawResponseTask&lt;DonorNotesV1&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">UpdateNotesAsync</a>(UpdateDonorNotesV1Request { ... }) -> WithRawResponseTask&lt;DonorNotesV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -539,7 +539,7 @@ await client.Donors.UpdateNotesAsync(new UpdateDonorNotesV1Request { Id = 1 });
 </details>
 
 ## Funds
-<details><summary><code>client.Funds.<a href="/src/AwardspringApi/Funds/FundsClient.cs">ListAsync</a>(ListFundsRequest { ... }) -> WithRawResponseTask&lt;FundListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Funds.<a href="/src/AwardSpring.Net/Funds/FundsClient.cs">ListAsync</a>(ListFundsRequest { ... }) -> WithRawResponseTask&lt;FundListItemV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -598,7 +598,7 @@ await client.Funds.ListAsync(new ListFundsRequest());
 </details>
 
 ## Gifts
-<details><summary><code>client.Gifts.<a href="/src/AwardspringApi/Gifts/GiftsClient.cs">ListAsync</a>(ListGiftsRequest { ... }) -> WithRawResponseTask&lt;GiftV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">ListAsync</a>(ListGiftsRequest { ... }) -> WithRawResponseTask&lt;GiftV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -654,7 +654,7 @@ await client.Gifts.ListAsync(new ListGiftsRequest());
 </dl>
 </details>
 
-<details><summary><code>client.Gifts.<a href="/src/AwardspringApi/Gifts/GiftsClient.cs">CreateAsync</a>(CreateGiftV1Request { ... }) -> WithRawResponseTask&lt;GiftV1&gt;</code></summary>
+<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">CreateAsync</a>(CreateGiftV1Request { ... }) -> WithRawResponseTask&lt;GiftV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -711,7 +711,7 @@ await client.Gifts.CreateAsync(new CreateGiftV1Request());
 </details>
 
 ## Scholarships
-<details><summary><code>client.Scholarships.<a href="/src/AwardspringApi/Scholarships/ScholarshipsClient.cs">ListAsync</a>(ListScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAsync</a>(ListScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipListItemV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -770,7 +770,7 @@ await client.Scholarships.ListAsync(new ListScholarshipsRequest());
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardspringApi/Scholarships/ScholarshipsClient.cs">CreateAsync</a>(CreateScholarshipV1Request { ... }) -> WithRawResponseTask&lt;CreateScholarshipV1Response&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">CreateAsync</a>(CreateScholarshipV1Request { ... }) -> WithRawResponseTask&lt;CreateScholarshipV1Response&gt;</code></summary>
 <dl>
 <dd>
 
@@ -847,7 +847,7 @@ await client.Scholarships.CreateAsync(new CreateScholarshipV1Request { AwardCycl
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardspringApi/Scholarships/ScholarshipsClient.cs">ListAvailableDollarsAsync</a>(ListAvailableDollarsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipAvailableDollarsV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAvailableDollarsAsync</a>(ListAvailableDollarsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipAvailableDollarsV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 
@@ -887,7 +887,7 @@ await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScho
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardspringApi/Scholarships/ScholarshipsClient.cs">GetAvailableDollarsAsync</a>(GetAvailableDollarsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipAvailableDollarsV1&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">GetAvailableDollarsAsync</a>(GetAvailableDollarsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipAvailableDollarsV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -929,7 +929,7 @@ await client.Scholarships.GetAvailableDollarsAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardspringApi/Scholarships/ScholarshipsClient.cs">ListAwardedStudentsAsync</a>(ListAwardedStudentsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;AwardedStudentV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAwardedStudentsAsync</a>(ListAwardedStudentsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;AwardedStudentV1ListResponse&gt;</code></summary>
 <dl>
 <dd>
 

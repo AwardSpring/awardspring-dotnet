@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/AwardspringApi.Test/AwardspringApi.Test.csproj" />
-  <Project Path="src/AwardspringApi/AwardspringApi.csproj" />
-</Solution>

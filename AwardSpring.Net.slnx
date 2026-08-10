@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/AwardSpring.Net.Test/AwardSpring.Net.Test.csproj" />
+  <Project Path="src/AwardSpring.Net/AwardSpring.Net.csproj" />
+</Solution>
