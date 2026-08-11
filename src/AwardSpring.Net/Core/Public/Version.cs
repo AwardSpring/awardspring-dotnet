@@ -3,5 +3,5 @@ namespace AwardSpring.Net;
 [Serializable]
 internal class Version
 {
-    public const string Current = "0.1.7";
+    public const string Current = "0.1.8";
 }
