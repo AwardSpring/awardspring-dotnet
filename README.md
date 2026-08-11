@@ -53,6 +53,129 @@ var client = new AwardspringApiClient("API_KEY");
 await client.Donors.ListAsync(new ListDonorsRequest());
 ```
 
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Donors.GetAsync(new GetDonorsRequest { Id = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.DonorActivities.GetAsync(
+    new GetDonorActivitiesRequest { DonorId = 1, ActivityId = 1 }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Gifts.ListAsync(new ListGiftsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.ListAsync(new ListScholarshipsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScholarshipsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.GetAvailableDollarsAsync(
+    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1 }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.ListAwardedStudentsAsync(new ListAwardedStudentsScholarshipsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Funds.ListAsync(new ListFundsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.AwardCycles.GetCurrentAsync();
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Donors.CreateAsync(new CreateDonorV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Donors.UpdateNotesAsync(new UpdateDonorNotesV1Request { Id = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Gifts.CreateAsync(new CreateGiftV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.CreateAsync(new CreateScholarshipV1Request { AwardCycleId = 1 });
+```
+
 ## Environments
 
 This SDK allows you to configure different environments for API requests.
