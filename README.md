@@ -7,6 +7,7 @@ The Awardspring C# library provides convenient access to the Awardspring APIs fr
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Reference](#reference)
@@ -22,6 +23,10 @@ The Awardspring C# library provides convenient access to the Awardspring APIs fr
   - [Additional Body Properties](#additional-body-properties)
   - [Forward Compatible Enums](#forward-compatible-enums)
 - [Contributing](#contributing)
+
+## Documentation
+
+API reference documentation is available [here](https://docs.awardspring.com).
 
 ## Requirements
 
@@ -45,7 +50,7 @@ Instantiate and use the client with the following:
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = 1 });
+await client.Donors.ListAsync(new ListDonorsRequest());
 ```
 
 ## Environments
@@ -70,7 +75,7 @@ will be thrown.
 using AwardSpring.Net;
 
 try {
-    var response = await client.DonorActivities.CreateAsync(...);
+    var response = await client.Donors.ListAsync(...);
 } catch (AwardspringApiApiException e) {
     System.Console.WriteLine(e.Body);
     System.Console.WriteLine(e.StatusCode);
@@ -113,7 +118,7 @@ Which status codes are retried depends on the `retryStatusCodes` generator confi
 Use the `MaxRetries` request option to configure this behavior.
 
 ```csharp
-var response = await client.DonorActivities.CreateAsync(
+var response = await client.Donors.ListAsync(
     ...,
     new RequestOptions {
         MaxRetries: 0 // Override MaxRetries at the request level
@@ -126,7 +131,7 @@ var response = await client.DonorActivities.CreateAsync(
 The SDK defaults to a 30 second timeout. Use the `Timeout` option to configure this behavior.
 
 ```csharp
-var response = await client.DonorActivities.CreateAsync(
+var response = await client.Donors.ListAsync(
     ...,
     new RequestOptions {
         Timeout: TimeSpan.FromSeconds(3) // Override timeout to 3s
@@ -142,7 +147,7 @@ Access raw HTTP response data (status code, headers, URL) alongside parsed respo
 using AwardSpring.Net;
 
 // Access raw response data (status code, headers, etc.) alongside the parsed response
-var result = await client.DonorActivities.CreateAsync(...).WithRawResponse();
+var result = await client.Donors.ListAsync(...).WithRawResponse();
 
 // Access the parsed data
 var data = result.Data;
@@ -159,7 +164,7 @@ if (headers.TryGetValue("X-Request-Id", out var requestId))
 }
 
 // For the default behavior, simply await without .WithRawResponse()
-var data = await client.DonorActivities.CreateAsync(...);
+var data = await client.Donors.ListAsync(...);
 
 // .WithRawResponse() also works on streaming endpoints (returns IAsyncEnumerable<T> + RawResponse)
 // and on endpoints with no response body (returns RawResponse only).
@@ -170,7 +175,7 @@ var data = await client.DonorActivities.CreateAsync(...);
 If you would like to send additional headers as part of the request, use the `AdditionalHeaders` request option.
 
 ```csharp
-var response = await client.DonorActivities.CreateAsync(
+var response = await client.Donors.ListAsync(
     ...,
     new RequestOptions {
         AdditionalHeaders = new Dictionary<string, string?>
@@ -186,7 +191,7 @@ var response = await client.DonorActivities.CreateAsync(
 If you would like to send additional query parameters as part of the request, use the `AdditionalQueryParameters` request option.
 
 ```csharp
-var response = await client.DonorActivities.CreateAsync(
+var response = await client.Donors.ListAsync(
     ...,
     new RequestOptions {
         AdditionalQueryParameters = new Dictionary<string, string>
@@ -203,7 +208,7 @@ If you would like to send additional body properties as part of the request, use
 This is only applied to JSON requests.
 
 ```csharp
-var response = await client.DonorActivities.CreateAsync(
+var response = await client.Donors.ListAsync(
     ...,
     new RequestOptions {
         AdditionalBodyProperties = new Dictionary<string, object>
