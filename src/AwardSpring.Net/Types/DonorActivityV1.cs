@@ -31,7 +31,7 @@ public record DonorActivityV1 : IJsonOnDeserialized
     public int? Id { get; set; }
 
     [JsonPropertyName("source")]
-    public int? Source { get; set; }
+    public DonorActivitySourceV1? Source { get; set; }
 
     /// <summary>
     /// Activity type label (e.g. `"LoggedEmail"`, `"Email"`, `"Sms"`, `"Award"`, `"GeneralApplication"`).
@@ -55,7 +55,7 @@ public record DonorActivityV1 : IJsonOnDeserialized
     /// When the activity occurred, in the tenant's local time zone (UTC epoch seconds on the wire).
     /// </summary>
     [JsonPropertyName("date")]
-    public DateTime? Date { get; set; }
+    public int? Date { get; set; }
 
     /// <summary>
     /// Monetary amount (logged monetary activities and awards); null otherwise.

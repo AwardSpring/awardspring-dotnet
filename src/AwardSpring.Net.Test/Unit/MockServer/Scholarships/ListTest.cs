@@ -25,8 +25,8 @@ public class ListTest : BaseMockServerTest
                   "total_amount": 1.1,
                   "is_active": true,
                   "award_cycle_id": 1,
-                  "application_start_date": "2024-01-15T09:30:00.000Z",
-                  "application_end_date": "2024-01-15T09:30:00.000Z"
+                  "application_start_date": 1,
+                  "application_end_date": 1
                 }
               ]
             }

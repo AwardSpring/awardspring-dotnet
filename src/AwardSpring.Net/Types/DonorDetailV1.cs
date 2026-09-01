@@ -45,7 +45,7 @@ public record DonorDetailV1 : IJsonOnDeserialized
     public DonorDetailV1Role? Role { get; set; }
 
     [JsonPropertyName("date_of_birth")]
-    public DateTime? DateOfBirth { get; set; }
+    public int? DateOfBirth { get; set; }
 
     [JsonPropertyName("birth_month")]
     public string? BirthMonth { get; set; }

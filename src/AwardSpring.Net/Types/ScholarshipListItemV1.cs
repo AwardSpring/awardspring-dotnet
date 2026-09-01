@@ -58,13 +58,13 @@ public record ScholarshipListItemV1 : IJsonOnDeserialized
     /// When the scholarship's application window opens (UTC epoch seconds).
     /// </summary>
     [JsonPropertyName("application_start_date")]
-    public DateTime? ApplicationStartDate { get; set; }
+    public int? ApplicationStartDate { get; set; }
 
     /// <summary>
     /// When the scholarship's application window closes (UTC epoch seconds).
     /// </summary>
     [JsonPropertyName("application_end_date")]
-    public DateTime? ApplicationEndDate { get; set; }
+    public int? ApplicationEndDate { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

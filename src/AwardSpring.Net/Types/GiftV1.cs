@@ -53,7 +53,7 @@ public record GiftV1 : IJsonOnDeserialized
     public bool? GiftAcknowledgementSent { get; set; }
 
     [JsonPropertyName("date")]
-    public DateTime? Date { get; set; }
+    public int? Date { get; set; }
 
     [JsonPropertyName("soft_credits")]
     public IEnumerable<SoftCreditV1>? SoftCredits { get; set; }

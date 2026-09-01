@@ -50,7 +50,7 @@ public record AwardedStudentV1 : IJsonOnDeserialized
     public string? Email { get; set; }
 
     [JsonPropertyName("awarded_date")]
-    public DateTime? AwardedDate { get; set; }
+    public int? AwardedDate { get; set; }
 
     [JsonPropertyName("awarded_amount")]
     public double? AwardedAmount { get; set; }

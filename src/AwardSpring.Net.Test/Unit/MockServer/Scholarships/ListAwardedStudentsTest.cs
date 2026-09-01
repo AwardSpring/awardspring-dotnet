@@ -28,7 +28,7 @@ public class ListAwardedStudentsTest : BaseMockServerTest
                   "first_name": "first_name",
                   "last_name": "last_name",
                   "email": "email",
-                  "awarded_date": "2024-01-15T09:30:00.000Z",
+                  "awarded_date": 1,
                   "awarded_amount": 1.1
                 }
               ]
@@ -40,6 +40,7 @@ public class ListAwardedStudentsTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/api/v1/scholarships/awarded-students")
+                    .WithParam("award_cycle_id", "1")
                     .UsingGet()
             )
             .RespondWith(
@@ -50,7 +51,7 @@ public class ListAwardedStudentsTest : BaseMockServerTest
             );
 
         var response = await Client.Scholarships.ListAwardedStudentsAsync(
-            new ListAwardedStudentsScholarshipsRequest()
+            new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

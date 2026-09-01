@@ -10,7 +10,7 @@ public record GetAvailableDollarsScholarshipsRequest
     public required int ScholarshipId { get; set; }
 
     [JsonIgnore]
-    public int? AwardCycleId { get; set; }
+    public required int AwardCycleId { get; set; }
 
     /// <inheritdoc />
     public override string ToString()

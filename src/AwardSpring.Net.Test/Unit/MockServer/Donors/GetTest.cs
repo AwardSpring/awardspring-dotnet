@@ -20,7 +20,7 @@ public class GetTest : BaseMockServerTest
                 "year_total": 1.1,
                 "year_gift_count": 1,
                 "last_gift": 1.1,
-                "last_gift_date": "2024-01-15T09:30:00.000Z",
+                "last_gift_date": 1,
                 "include_soft_credits": true
               },
               "id": 1,
@@ -29,7 +29,7 @@ public class GetTest : BaseMockServerTest
               "email": "email",
               "phone": "phone",
               "role": "Individual",
-              "date_of_birth": "2024-01-15T09:30:00.000Z",
+              "date_of_birth": 1,
               "birth_month": "birth_month",
               "birth_day": 1,
               "birth_year": 1,

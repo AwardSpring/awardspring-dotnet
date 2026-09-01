@@ -24,7 +24,7 @@ public class CreateTest : BaseMockServerTest
               "email": "email",
               "phone": "phone",
               "role": "Individual",
-              "date_of_birth": "2024-01-15T09:30:00.000Z",
+              "date_of_birth": 1,
               "birth_month": "birth_month",
               "birth_day": 1,
               "birth_year": 1,

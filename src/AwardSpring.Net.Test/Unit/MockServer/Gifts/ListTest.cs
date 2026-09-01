@@ -31,7 +31,7 @@ public class ListTest : BaseMockServerTest
                   "campaign_id": 1,
                   "is_completed": true,
                   "gift_acknowledgement_sent": true,
-                  "date": "2024-01-15T09:30:00.000Z",
+                  "date": 1,
                   "soft_credits": [
                     {}
                   ]

@@ -7,7 +7,7 @@ namespace AwardSpring.Net;
 public record ListAvailableDollarsScholarshipsRequest
 {
     [JsonIgnore]
-    public int? AwardCycleId { get; set; }
+    public required int AwardCycleId { get; set; }
 
     /// <summary>
     /// Page size. Defaults to 25. Values outside 1–100 are clamped rather than rejected.

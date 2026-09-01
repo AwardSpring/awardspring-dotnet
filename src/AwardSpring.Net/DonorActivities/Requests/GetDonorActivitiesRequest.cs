@@ -13,7 +13,7 @@ public record GetDonorActivitiesRequest
     public required int ActivityId { get; set; }
 
     [JsonIgnore]
-    public int? Source { get; set; }
+    public DonorActivitySourceV1? Source { get; set; }
 
     /// <inheritdoc />
     public override string ToString()

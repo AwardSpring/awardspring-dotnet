@@ -861,7 +861,9 @@ public partial class ScholarshipsClient : IScholarshipsClient
     }
 
     /// <example><code>
-    /// await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScholarshipsRequest());
+    /// await client.Scholarships.ListAvailableDollarsAsync(
+    ///     new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
+    /// );
     /// </code></example>
     public WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsAsync(
         ListAvailableDollarsScholarshipsRequest request,
@@ -876,7 +878,7 @@ public partial class ScholarshipsClient : IScholarshipsClient
 
     /// <example><code>
     /// await client.Scholarships.GetAvailableDollarsAsync(
-    ///     new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1 }
+    ///     new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
     /// );
     /// </code></example>
     public WithRawResponseTask<ScholarshipAvailableDollarsV1> GetAvailableDollarsAsync(
@@ -891,7 +893,9 @@ public partial class ScholarshipsClient : IScholarshipsClient
     }
 
     /// <example><code>
-    /// await client.Scholarships.ListAwardedStudentsAsync(new ListAwardedStudentsScholarshipsRequest());
+    /// await client.Scholarships.ListAwardedStudentsAsync(
+    ///     new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
+    /// );
     /// </code></example>
     public WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsAsync(
         ListAwardedStudentsScholarshipsRequest request,

@@ -860,7 +860,9 @@ await client.Scholarships.CreateAsync(new CreateScholarshipV1Request { AwardCycl
 <dd>
 
 ```csharp
-await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScholarshipsRequest());
+await client.Scholarships.ListAvailableDollarsAsync(
+    new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
+);
 ```
 </dd>
 </dl>
@@ -901,7 +903,7 @@ await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScho
 
 ```csharp
 await client.Scholarships.GetAvailableDollarsAsync(
-    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1 }
+    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
 );
 ```
 </dd>
@@ -942,7 +944,9 @@ await client.Scholarships.GetAvailableDollarsAsync(
 <dd>
 
 ```csharp
-await client.Scholarships.ListAwardedStudentsAsync(new ListAwardedStudentsScholarshipsRequest());
+await client.Scholarships.ListAwardedStudentsAsync(
+    new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
+);
 ```
 </dd>
 </dl>

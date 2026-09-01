@@ -35,7 +35,7 @@ public record DonorQuickStatsV1 : IJsonOnDeserialized
     public double? LastGift { get; set; }
 
     [JsonPropertyName("last_gift_date")]
-    public DateTime? LastGiftDate { get; set; }
+    public int? LastGiftDate { get; set; }
 
     [JsonPropertyName("include_soft_credits")]
     public bool? IncludeSoftCredits { get; set; }

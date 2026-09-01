@@ -54,7 +54,7 @@ public record CreateDonorActivityV1Response : IJsonOnDeserialized
     /// The activity date (UTC epoch seconds on the wire).
     /// </summary>
     [JsonPropertyName("date")]
-    public DateTime? Date { get; set; }
+    public int? Date { get; set; }
 
     /// <summary>
     /// Pledge amount, or `null` for non-monetary activity types.

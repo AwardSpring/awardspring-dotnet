@@ -7,7 +7,7 @@ namespace AwardSpring.Net;
 public record ListAwardedStudentsScholarshipsRequest
 {
     [JsonIgnore]
-    public int? AwardCycleId { get; set; }
+    public required int AwardCycleId { get; set; }
 
     [JsonIgnore]
     public int? ScholarshipId { get; set; }

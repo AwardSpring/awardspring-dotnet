@@ -94,15 +94,8 @@ await client.Scholarships.ListAsync(new ListScholarshipsRequest());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.ListAvailableDollarsAsync(new ListAvailableDollarsScholarshipsRequest());
-```
-
-```csharp
-using AwardSpring.Net;
-
-var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.GetAvailableDollarsAsync(
-    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1 }
+await client.Scholarships.ListAvailableDollarsAsync(
+    new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
 );
 ```
 
@@ -110,7 +103,18 @@ await client.Scholarships.GetAvailableDollarsAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.ListAwardedStudentsAsync(new ListAwardedStudentsScholarshipsRequest());
+await client.Scholarships.GetAvailableDollarsAsync(
+    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.ListAwardedStudentsAsync(
+    new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
+);
 ```
 
 ```csharp

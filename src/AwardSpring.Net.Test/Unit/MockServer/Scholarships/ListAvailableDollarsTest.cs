@@ -35,6 +35,7 @@ public class ListAvailableDollarsTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/api/v1/scholarships/available-dollars")
+                    .WithParam("award_cycle_id", "1")
                     .UsingGet()
             )
             .RespondWith(
@@ -45,7 +46,7 @@ public class ListAvailableDollarsTest : BaseMockServerTest
             );
 
         var response = await Client.Scholarships.ListAvailableDollarsAsync(
-            new ListAvailableDollarsScholarshipsRequest()
+            new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

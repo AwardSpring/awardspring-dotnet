@@ -22,7 +22,7 @@ public class CreateTest : BaseMockServerTest
               "activity_type": "activity_type",
               "subject": "subject",
               "description": "description",
-              "date": "2024-01-15T09:30:00.000Z",
+              "date": 1,
               "amount": 1.1,
               "fund_id": "fund_id",
               "campaign_id": 1,

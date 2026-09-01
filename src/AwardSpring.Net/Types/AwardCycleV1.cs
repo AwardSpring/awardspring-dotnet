@@ -52,25 +52,25 @@ public record AwardCycleV1 : IJsonOnDeserialized
     /// When the cycle's application window opens (UTC epoch seconds), or null when unset.
     /// </summary>
     [JsonPropertyName("application_start_date")]
-    public DateTime? ApplicationStartDate { get; set; }
+    public int? ApplicationStartDate { get; set; }
 
     /// <summary>
     /// When the cycle's application window closes (UTC epoch seconds), or null when unset.
     /// </summary>
     [JsonPropertyName("application_end_date")]
-    public DateTime? ApplicationEndDate { get; set; }
+    public int? ApplicationEndDate { get; set; }
 
     /// <summary>
     /// When the cycle's review window opens (UTC epoch seconds), or null when unset.
     /// </summary>
     [JsonPropertyName("review_start_date")]
-    public DateTime? ReviewStartDate { get; set; }
+    public int? ReviewStartDate { get; set; }
 
     /// <summary>
     /// When the cycle's review window closes (UTC epoch seconds), or null when unset.
     /// </summary>
     [JsonPropertyName("review_end_date")]
-    public DateTime? ReviewEndDate { get; set; }
+    public int? ReviewEndDate { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
