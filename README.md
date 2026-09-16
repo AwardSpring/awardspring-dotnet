@@ -121,6 +121,34 @@ await client.Scholarships.ListAwardedStudentsAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
+await client.Students.ListAsync(new ListStudentsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Students.GetAsync(new GetStudentsRequest { Id = 1 });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Applications.ListAsync(new ListApplicationsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Awards.ListAsync(new ListAwardsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
 await client.Funds.ListAsync(new ListFundsRequest());
 ```
 

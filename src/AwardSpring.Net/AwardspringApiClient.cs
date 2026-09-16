@@ -15,7 +15,7 @@ public partial class AwardspringApiClient : IAwardspringApiClient
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "AwardSpring.Net" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "AwardSpring.Net/0.1.9" },
+                { "User-Agent", "AwardSpring.Net/0.1.10" },
             }
         );
         foreach (var header in platformHeaders)
@@ -34,15 +34,22 @@ public partial class AwardspringApiClient : IAwardspringApiClient
             clientOptionsWithAuth.Headers[header.Key] = header.Value;
         }
         _client = new RawClient(clientOptionsWithAuth);
+        Applications = new ApplicationsClient(_client);
         AwardCycles = new AwardCyclesClient(_client);
+        Awards = new AwardsClient(_client);
         DonorActivities = new DonorActivitiesClient(_client);
         Donors = new DonorsClient(_client);
         Funds = new FundsClient(_client);
         Gifts = new GiftsClient(_client);
         Scholarships = new ScholarshipsClient(_client);
+        Students = new StudentsClient(_client);
     }
 
+    public IApplicationsClient Applications { get; }
+
     public IAwardCyclesClient AwardCycles { get; }
+
+    public IAwardsClient Awards { get; }
 
     public IDonorActivitiesClient DonorActivities { get; }
 
@@ -53,4 +60,6 @@ public partial class AwardspringApiClient : IAwardspringApiClient
     public IGiftsClient Gifts { get; }
 
     public IScholarshipsClient Scholarships { get; }
+
+    public IStudentsClient Students { get; }
 }

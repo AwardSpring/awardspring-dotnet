@@ -1,4 +1,64 @@
 # Reference
+## Applications
+<details><summary><code>client.Applications.<a href="/src/AwardSpring.Net/Applications/ApplicationsClient.cs">ListAsync</a>(ListApplicationsRequest { ... }) -> WithRawResponseTask&lt;ApplicationV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one page at a time. Each row names the scholarship and award cycle it belongs to,
+and carries a `status` of `applied`, `awarded`, or `denied`. Without
+filters the list covers the whole institution; narrow it with `user_id` (a
+student's `id` from the Students endpoints) to scope to a single student. Returns
+`404 student_not_found` when the `user_id` does not belong to this
+institution.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Applications.ListAsync(new ListApplicationsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListApplicationsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Award Cycles
 <details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">ListAsync</a>(ListAwardCyclesRequest { ... }) -> WithRawResponseTask&lt;AwardCycleV1ListResponse&gt;</code></summary>
 <dl>
@@ -92,6 +152,65 @@ and ask the user which one to use.
 ```csharp
 await client.AwardCycles.GetCurrentAsync();
 ```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Awards
+<details><summary><code>client.Awards.<a href="/src/AwardSpring.Net/Awards/AwardsClient.cs">ListAsync</a>(ListAwardsRequest { ... }) -> WithRawResponseTask&lt;AwardV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one page at a time. Each row names the awarded scholarship and its award cycle,
+and carries the awarded amount and decision date. Without filters the list covers the
+whole institution; narrow it with `user_id` (a student's `id` from the
+Students endpoints) to scope to a single student. Returns `404 student_not_found`
+when the `user_id` does not belong to this institution.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Awards.ListAsync(new ListAwardsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListAwardsRequest` 
+    
 </dd>
 </dl>
 </dd>
@@ -962,6 +1081,120 @@ await client.Scholarships.ListAwardedStudentsAsync(
 <dd>
 
 **request:** `ListAwardedStudentsScholarshipsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Students
+<details><summary><code>client.Students.<a href="/src/AwardSpring.Net/Students/StudentsClient.cs">ListAsync</a>(ListStudentsRequest { ... }) -> WithRawResponseTask&lt;StudentV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one page at a time, covering every student account at the institution — both
+registered and prospective. Search with `q`: it splits on spaces and matches each
+term against first name, last name, or email. Filter with `student_id` to look a
+student up by the number the institution assigned; numbers are not guaranteed unique, so
+the match can return more than one student.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Students.ListAsync(new ListStudentsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListStudentsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Students.<a href="/src/AwardSpring.Net/Students/StudentsClient.cs">GetAsync</a>(GetStudentsRequest { ... }) -> WithRawResponseTask&lt;StudentV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches one student by their AwardSpring identifier — the `id` from the students
+list. Returns `404 student_not_found` if no such student belongs to this institution.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Students.GetAsync(new GetStudentsRequest { Id = 1 });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `GetStudentsRequest` 
     
 </dd>
 </dl>
