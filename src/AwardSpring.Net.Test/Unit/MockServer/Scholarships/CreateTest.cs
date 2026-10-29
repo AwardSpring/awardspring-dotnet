@@ -13,14 +13,12 @@ public class CreateTest : BaseMockServerTest
     public async Task MockServerTest()
     {
         const string requestJson = """
-            {
-              "award_cycle_id": 1
-            }
+            {}
             """;
 
         const string mockResponse = """
             {
-              "scholarship_id": 1
+              "scholarship_id": "scholarship_id"
             }
             """;
 
@@ -40,9 +38,7 @@ public class CreateTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Scholarships.CreateAsync(
-            new CreateScholarshipV1Request { AwardCycleId = 1 }
-        );
+        var response = await Client.Scholarships.CreateAsync(new CreateScholarshipV1Request());
         JsonAssert.AreEqual(response, mockResponse);
     }
 }

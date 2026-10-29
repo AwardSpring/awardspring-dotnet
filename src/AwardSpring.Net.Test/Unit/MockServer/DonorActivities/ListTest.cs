@@ -18,9 +18,10 @@ public class ListTest : BaseMockServerTest
               "has_more": true,
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
+              "total_count": 1,
               "data": [
                 {
-                  "id": 1,
+                  "id": "id",
                   "source": "Logged",
                   "activity_type": "activity_type",
                   "subject": "subject",
@@ -31,8 +32,8 @@ public class ListTest : BaseMockServerTest
                   "is_completed": true,
                   "gift_acknowledgement_sent": true,
                   "gift_type": "gift_type",
-                  "campaign_id": 1,
-                  "assigned_to_user_id": 1,
+                  "campaign_id": "campaign_id",
+                  "assigned_to_user_id": "assigned_to_user_id",
                   "sender_name": "sender_name"
                 }
               ]
@@ -43,7 +44,7 @@ public class ListTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/api/v1/donors/1/activities")
+                    .WithPath("/api/v1/donors/donorId/activities")
                     .UsingGet()
             )
             .RespondWith(
@@ -54,7 +55,7 @@ public class ListTest : BaseMockServerTest
             );
 
         var response = await Client.DonorActivities.ListAsync(
-            new ListDonorActivitiesRequest { DonorId = 1 }
+            new ListDonorActivitiesRequest { DonorId = "donorId" }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

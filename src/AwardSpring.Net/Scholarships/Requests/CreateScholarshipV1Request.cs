@@ -38,10 +38,10 @@ public record CreateScholarshipV1Request
     public bool? IsSpecialFunds { get; set; }
 
     /// <summary>
-    /// AwardSpring award-cycle identifier this scholarship belongs to. Required. Example: `12`.
+    /// The stored ID of the award cycle this scholarship belongs to. Required. Example: `"4MZ8QW2TC"`.
     /// </summary>
     [JsonPropertyName("award_cycle_id")]
-    public required int AwardCycleId { get; set; }
+    public string? AwardCycleId { get; set; }
 
     /// <summary>
     /// ISO 8601 datetime when applicants can begin applying. Example: `"2026-08-01T00:00:00"`.
@@ -91,24 +91,35 @@ public record CreateScholarshipV1Request
 
     /// <summary>
     /// Optional number of payments each recipient receives. Must be 1 or greater when supplied.
-    /// Example: `2`.
+    /// When it is 2 or more, `payment_schedule_ids` must name one payment schedule for each payment
+    /// after the first. Example: `2`.
     /// </summary>
     [JsonPropertyName("payments_per_award")]
     public int? PaymentsPerAward { get; set; }
 
     /// <summary>
-    /// Optional AwardSpring department ID the scholarship is owned by. Used for Department Admin
-    /// scoping. Example: `3`.
+    /// The award cycle's payment schedules used for the second and later payments, one per payment after
+    /// the first, in date order. Required when `payments_per_award` is 2 or more, and must be left out
+    /// otherwise. List them with `GET /api/v1/payment-schedules?award_cycle_id=`; each id must be one of
+    /// the schedules configured on the scholarship's award cycle, and any other id is rejected.
+    /// Example: `[12]`.
     /// </summary>
-    [JsonPropertyName("department_id")]
-    public int? DepartmentId { get; set; }
+    [JsonPropertyName("payment_schedule_ids")]
+    public IEnumerable<int>? PaymentScheduleIds { get; set; }
 
     /// <summary>
-    /// Optional list of donor or donor-organization user IDs associated with the scholarship.
-    /// Example: `[101, 102]`.
+    /// Optional stored ID of the department the scholarship is owned by. Used for Department Admin
+    /// scoping. Example: `"9TQ3HX7PD"`.
+    /// </summary>
+    [JsonPropertyName("department_id")]
+    public string? DepartmentId { get; set; }
+
+    /// <summary>
+    /// Optional list of the stored IDs of donors or donor organizations associated with the scholarship.
+    /// Example: `["2KD7RW4MA", "8PX5NT3QF"]`.
     /// </summary>
     [JsonPropertyName("donor_ids")]
-    public IEnumerable<int>? DonorIds { get; set; }
+    public IEnumerable<string>? DonorIds { get; set; }
 
     /// <summary>
     /// Whether the scholarship is deactivated on create (rare — typically left `false`).

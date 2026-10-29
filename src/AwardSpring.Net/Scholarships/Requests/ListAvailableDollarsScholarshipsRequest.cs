@@ -7,7 +7,7 @@ namespace AwardSpring.Net;
 public record ListAvailableDollarsScholarshipsRequest
 {
     [JsonIgnore]
-    public required int AwardCycleId { get; set; }
+    public required string AwardCycleId { get; set; }
 
     /// <summary>
     /// Page size. Defaults to 25. Values outside 1–100 are clamped rather than rejected.
@@ -26,6 +26,13 @@ public record ListAvailableDollarsScholarshipsRequest
     /// </summary>
     [JsonIgnore]
     public string? EndingBefore { get; set; }
+
+    /// <summary>
+    /// Optional extras to add to the response, comma-separated. `total_count` is the only supported value: it adds `total_count`, the number of records that match this request across all pages. The count is taken fresh at the moment of each request, so it can change while you page; ask for it on the first page. Without it, `total_count` is left out of the response. Asking or not never invalidates a cursor. Any other value returns `400 validation_failed`.
+    /// </summary>
+    [JsonIgnore]
+    public IEnumerable<ListAvailableDollarsScholarshipsRequestIncludeItem> Include { get; set; } =
+        new List<ListAvailableDollarsScholarshipsRequestIncludeItem>();
 
     /// <inheritdoc />
     public override string ToString()

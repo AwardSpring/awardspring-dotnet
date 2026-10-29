@@ -23,10 +23,10 @@ public record StudentV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// AwardSpring's identifier for the student's user record. Use it with `GET /api/v1/students/{id}` and as the `user_id` filter on the applications and awards lists.
+    /// The stored ID of the student's user record. Use it with `GET /api/v1/students/{id}` and as the `user_id` filter on the applications and awards lists.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("first_name")]
     public string? FirstName { get; set; }

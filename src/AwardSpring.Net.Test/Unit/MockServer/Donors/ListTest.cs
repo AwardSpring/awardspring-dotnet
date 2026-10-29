@@ -18,15 +18,20 @@ public class ListTest : BaseMockServerTest
               "has_more": true,
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
+              "total_count": 1,
               "data": [
                 {
-                  "id": 1,
+                  "id": "id",
                   "first_name": "first_name",
                   "last_name": "last_name",
                   "email": "email",
                   "organization": "organization",
                   "phone": "phone",
-                  "role": "Individual"
+                  "role": "Individual",
+                  "level": "Annual",
+                  "last_contacted_at": 1,
+                  "lifetime_giving": 1.1,
+                  "giving_status": "Recurring"
                 }
               ]
             }

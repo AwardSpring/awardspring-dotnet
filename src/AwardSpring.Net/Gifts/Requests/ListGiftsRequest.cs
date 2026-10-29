@@ -7,10 +7,10 @@ namespace AwardSpring.Net;
 public record ListGiftsRequest
 {
     /// <summary>
-    /// Optional donor scope (`?donor_id=`). Omit for a tenant-wide list.
+    /// Optional donor scope (`?donor_id=`): the donor's stored ID. Omit for a tenant-wide list.
     /// </summary>
     [JsonIgnore]
-    public int? DonorId { get; set; }
+    public string? DonorId { get; set; }
 
     /// <summary>
     /// Record-type filter (`?type=`): `gift` or `pledge`. Omit for both.
@@ -41,6 +41,13 @@ public record ListGiftsRequest
     /// </summary>
     [JsonIgnore]
     public string? EndingBefore { get; set; }
+
+    /// <summary>
+    /// Optional extras to add to the response, comma-separated. `total_count` is the only supported value: it adds `total_count`, the number of records that match this request across all pages. The count is taken fresh at the moment of each request, so it can change while you page; ask for it on the first page. Without it, `total_count` is left out of the response. Asking or not never invalidates a cursor. Any other value returns `400 validation_failed`.
+    /// </summary>
+    [JsonIgnore]
+    public IEnumerable<ListGiftsRequestIncludeItem> Include { get; set; } =
+        new List<ListGiftsRequestIncludeItem>();
 
     /// <inheritdoc />
     public override string ToString()

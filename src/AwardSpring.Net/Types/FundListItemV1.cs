@@ -19,8 +19,11 @@ public record FundListItemV1 : IJsonOnDeserialized
     [JsonPropertyName("object")]
     public string? Object { get; set; }
 
+    /// <summary>
+    /// The fund's stored ID. The school's own fund code is `fund_id`.
+    /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("fund_id")]
     public string? FundId { get; set; }

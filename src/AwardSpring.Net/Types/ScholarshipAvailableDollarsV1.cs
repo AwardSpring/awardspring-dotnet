@@ -23,10 +23,10 @@ public record ScholarshipAvailableDollarsV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// The scholarship's identifier — also the cursor anchor used for paging.
+    /// The scholarship's stored ID.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }

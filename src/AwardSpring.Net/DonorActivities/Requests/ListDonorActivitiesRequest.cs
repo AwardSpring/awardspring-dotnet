@@ -7,7 +7,7 @@ namespace AwardSpring.Net;
 public record ListDonorActivitiesRequest
 {
     [JsonIgnore]
-    public required int DonorId { get; set; }
+    public required string DonorId { get; set; }
 
     /// <summary>
     /// Free-text search (`?q=`): case-insensitive substring match on subject or description.
@@ -38,6 +38,13 @@ public record ListDonorActivitiesRequest
     /// </summary>
     [JsonIgnore]
     public string? EndingBefore { get; set; }
+
+    /// <summary>
+    /// Optional extras to add to the response, comma-separated. `total_count` is the only supported value: it adds `total_count`, the number of records that match this request across all pages. The count is taken fresh at the moment of each request, so it can change while you page; ask for it on the first page. Without it, `total_count` is left out of the response. Asking or not never invalidates a cursor. Any other value returns `400 validation_failed`.
+    /// </summary>
+    [JsonIgnore]
+    public IEnumerable<ListDonorActivitiesRequestIncludeItem> Include { get; set; } =
+        new List<ListDonorActivitiesRequestIncludeItem>();
 
     /// <inheritdoc />
     public override string ToString()

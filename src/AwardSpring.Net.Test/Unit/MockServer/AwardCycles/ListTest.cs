@@ -18,9 +18,10 @@ public class ListTest : BaseMockServerTest
               "has_more": true,
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
+              "total_count": 1,
               "data": [
                 {
-                  "id": 1,
+                  "id": "id",
                   "name": "name",
                   "is_current": true,
                   "is_next": true,

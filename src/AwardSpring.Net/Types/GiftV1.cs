@@ -19,11 +19,18 @@ public record GiftV1 : IJsonOnDeserialized
     [JsonPropertyName("object")]
     public string? Object { get; set; }
 
+    /// <summary>
+    /// The gift's or pledge's stored ID: 9 characters, sent exactly as stored. A dry-run create
+    /// returns `null`, because nothing was saved.
+    /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
+    /// <summary>
+    /// The stored ID of the donor the gift or pledge is attributed to.
+    /// </summary>
     [JsonPropertyName("donor_id")]
-    public int? DonorId { get; set; }
+    public string? DonorId { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -40,11 +47,17 @@ public record GiftV1 : IJsonOnDeserialized
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
+    /// <summary>
+    /// The school's own code for the fund the gift is directed toward, as plain text.
+    /// </summary>
     [JsonPropertyName("fund_id")]
     public string? FundId { get; set; }
 
+    /// <summary>
+    /// The stored ID of the campaign the gift or pledge belongs to, or `null`.
+    /// </summary>
     [JsonPropertyName("campaign_id")]
-    public int? CampaignId { get; set; }
+    public string? CampaignId { get; set; }
 
     [JsonPropertyName("is_completed")]
     public bool? IsCompleted { get; set; }

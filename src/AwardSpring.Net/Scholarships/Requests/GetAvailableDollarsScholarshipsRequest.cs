@@ -7,10 +7,10 @@ namespace AwardSpring.Net;
 public record GetAvailableDollarsScholarshipsRequest
 {
     [JsonIgnore]
-    public required int ScholarshipId { get; set; }
+    public required string ScholarshipId { get; set; }
 
     [JsonIgnore]
-    public required int AwardCycleId { get; set; }
+    public required string AwardCycleId { get; set; }
 
     /// <inheritdoc />
     public override string ToString()

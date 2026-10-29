@@ -5,9 +5,9 @@ using global::System.Text.Json.Serialization;
 namespace AwardSpring.Net;
 
 /// <summary>
-/// A single soft-credit recipient on a gift. Supply either UserId (an existing
-/// AwardSpring user in this tenant) or a free-form Name. When both are given, the
-/// user id wins and the name is dropped — mirroring the internal gift-entry flow.
+/// A single soft-credit recipient on a gift. Supply either UserId (the stored ID of an
+/// existing person at this institution) or a free-form Name. When both are given, the
+/// user ID wins and the name is dropped — mirroring the internal gift-entry flow.
 /// </summary>
 [Serializable]
 public record SoftCreditV1Input : IJsonOnDeserialized
@@ -20,7 +20,7 @@ public record SoftCreditV1Input : IJsonOnDeserialized
     public string? Name { get; set; }
 
     [JsonPropertyName("user_id")]
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

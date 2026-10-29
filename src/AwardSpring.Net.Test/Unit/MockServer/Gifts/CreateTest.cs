@@ -18,22 +18,22 @@ public class CreateTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "id": 1,
-              "donor_id": 1,
+              "id": "id",
+              "donor_id": "donor_id",
               "type": "type",
               "gift_type": "gift_type",
               "amount": 1.1,
               "subject": "subject",
               "description": "description",
               "fund_id": "fund_id",
-              "campaign_id": 1,
+              "campaign_id": "campaign_id",
               "is_completed": true,
               "gift_acknowledgement_sent": true,
               "date": 1,
               "soft_credits": [
                 {
                   "name": "name",
-                  "user_id": 1
+                  "user_id": "user_id"
                 }
               ]
             }

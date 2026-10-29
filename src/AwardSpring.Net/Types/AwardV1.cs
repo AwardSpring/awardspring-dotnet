@@ -23,22 +23,30 @@ public record AwardV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// Award identifier — also the cursor anchor for the list.
+    /// The award's ID: the stored ID of the application it was awarded on, so it equals that application's
+    /// `id` in `GET /api/v1/applications`. It stays the same when the application is denied and awarded again.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
-    /// The recipient's user record id — the same value as the student resource's `id` (see the Students endpoints).
+    /// The 8-character award code AwardSpring issued when the application was awarded. Null when none was issued,
+    /// as on applications awarded before award codes existed.
+    /// </summary>
+    [JsonPropertyName("award_code")]
+    public string? AwardCode { get; set; }
+
+    /// <summary>
+    /// The stored ID of the recipient's user record: the same value as the student resource's `id` (see the Students endpoints).
     /// </summary>
     [JsonPropertyName("user_id")]
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     /// <summary>
-    /// Identifier of the awarded scholarship (see the Scholarships endpoints).
+    /// The stored ID of the awarded scholarship (see the Scholarships endpoints).
     /// </summary>
     [JsonPropertyName("scholarship_id")]
-    public int? ScholarshipId { get; set; }
+    public string? ScholarshipId { get; set; }
 
     /// <summary>
     /// Name of the awarded scholarship, denormalized onto the row for convenience.
@@ -47,10 +55,10 @@ public record AwardV1 : IJsonOnDeserialized
     public string? ScholarshipName { get; set; }
 
     /// <summary>
-    /// Identifier of the award cycle the award belongs to (see the Award Cycles endpoints).
+    /// The stored ID of the award cycle the award belongs to (see the Award Cycles endpoints).
     /// </summary>
     [JsonPropertyName("award_cycle_id")]
-    public int? AwardCycleId { get; set; }
+    public string? AwardCycleId { get; set; }
 
     /// <summary>
     /// Name of the award cycle the award belongs to, denormalized onto the row for convenience.

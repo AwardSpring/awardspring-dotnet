@@ -8,6 +8,8 @@ public partial interface IFundsClient
     /// `data`). Page forward by passing the returned `next_cursor` as
     /// `starting_after`. Filter with `?q=` (case-insensitive substring match on the
     /// fund name).
+    ///
+    /// Assistant capability: `springiq_list_funds`. Required permission: Funds (applies when called on behalf of a signed-in person).
     /// </summary>
     WithRawResponseTask<FundListItemV1ListResponse> ListAsync(
         ListFundsRequest request,

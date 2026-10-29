@@ -14,7 +14,7 @@ public class GetTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "source": "Logged",
               "activity_type": "activity_type",
               "subject": "subject",
@@ -25,8 +25,8 @@ public class GetTest : BaseMockServerTest
               "is_completed": true,
               "gift_acknowledgement_sent": true,
               "gift_type": "gift_type",
-              "campaign_id": 1,
-              "assigned_to_user_id": 1,
+              "campaign_id": "campaign_id",
+              "assigned_to_user_id": "assigned_to_user_id",
               "sender_name": "sender_name"
             }
             """;
@@ -35,7 +35,7 @@ public class GetTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/api/v1/donors/1/activities/1")
+                    .WithPath("/api/v1/donors/donorId/activities/activityId")
                     .UsingGet()
             )
             .RespondWith(
@@ -46,7 +46,7 @@ public class GetTest : BaseMockServerTest
             );
 
         var response = await Client.DonorActivities.GetAsync(
-            new GetDonorActivitiesRequest { DonorId = 1, ActivityId = 1 }
+            new GetDonorActivitiesRequest { DonorId = "donorId", ActivityId = "activityId" }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

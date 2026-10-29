@@ -23,7 +23,7 @@ public class GetTest : BaseMockServerTest
                 "last_gift_date": 1,
                 "include_soft_credits": true
               },
-              "id": 1,
+              "id": "id",
               "first_name": "first_name",
               "last_name": "last_name",
               "email": "email",
@@ -62,7 +62,7 @@ public class GetTest : BaseMockServerTest
 
         Server
             .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/api/v1/donors/1").UsingGet()
+                WireMock.RequestBuilders.Request.Create().WithPath("/api/v1/donors/id").UsingGet()
             )
             .RespondWith(
                 WireMock
@@ -71,7 +71,7 @@ public class GetTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Donors.GetAsync(new GetDonorsRequest { Id = 1 });
+        var response = await Client.Donors.GetAsync(new GetDonorsRequest { Id = "id" });
         JsonAssert.AreEqual(response, mockResponse);
     }
 }

@@ -19,8 +19,12 @@ public record DonorV1 : IJsonOnDeserialized
     [JsonPropertyName("object")]
     public string? Object { get; set; }
 
+    /// <summary>
+    /// The donor's stored ID: 9 characters, sent exactly as stored. A dry-run create returns
+    /// `null`, because no donor was saved.
+    /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("first_name")]
     public string? FirstName { get; set; }

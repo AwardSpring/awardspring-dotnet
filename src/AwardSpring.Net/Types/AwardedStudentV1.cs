@@ -23,13 +23,22 @@ public record AwardedStudentV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// Award row identifier (the underlying OpportunityApplication id) — also the cursor anchor for the list.
+    /// The award's stored ID (its application's stored ID).
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
+    /// <summary>
+    /// The award's 8-character award code. May be empty on awards made before award codes existed.
+    /// </summary>
+    [JsonPropertyName("award_code")]
+    public string? AwardCode { get; set; }
+
+    /// <summary>
+    /// The scholarship's stored ID.
+    /// </summary>
     [JsonPropertyName("scholarship_id")]
-    public int? ScholarshipId { get; set; }
+    public string? ScholarshipId { get; set; }
 
     [JsonPropertyName("scholarship_name")]
     public string? ScholarshipName { get; set; }

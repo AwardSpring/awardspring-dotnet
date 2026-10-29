@@ -4,8 +4,10 @@ public partial interface IGiftsClient
 {
     /// <summary>
     /// Returns one page at a time, newest first. Without filters the list covers the whole
-    /// institution. Narrow it with `donor_id` to scope to a single donor, `type` to
+    /// institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
     /// return only gifts or only pledges, and `q` to search the subject and description.
+    ///
+    /// Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
     WithRawResponseTask<GiftV1ListResponse> ListAsync(
         ListGiftsRequest request,

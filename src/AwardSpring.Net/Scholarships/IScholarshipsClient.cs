@@ -9,6 +9,8 @@ public partial interface IScholarshipsClient
     /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
     /// Results are ordered by scholarship id ascending.
     /// Filter with `?q=` (case-insensitive substring match on the scholarship name).
+    ///
+    /// Assistant capability: `springiq_list_scholarships`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
     WithRawResponseTask<ScholarshipListItemV1ListResponse> ListAsync(
         ListScholarshipsRequest request,
@@ -41,6 +43,9 @@ public partial interface IScholarshipsClient
     /// `422 idempotency_key_request_mismatch`; a concurrent retry while the first call is
     /// still executing returns `409 idempotency_key_in_flight`. Only 2xx responses are
     /// cached — 4xx/5xx leave the key available for retry with a corrected payload.
+    ///
+    ///
+    /// Assistant capability: `springiq_create_scholarship`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
     WithRawResponseTask<CreateScholarshipV1Response> CreateAsync(
         CreateScholarshipV1Request request,
@@ -48,18 +53,27 @@ public partial interface IScholarshipsClient
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsAsync(
         ListAvailableDollarsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     WithRawResponseTask<ScholarshipAvailableDollarsV1> GetAvailableDollarsAsync(
         GetAvailableDollarsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_awarded_students`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsAsync(
         ListAwardedStudentsScholarshipsRequest request,
         RequestOptions? options = null,

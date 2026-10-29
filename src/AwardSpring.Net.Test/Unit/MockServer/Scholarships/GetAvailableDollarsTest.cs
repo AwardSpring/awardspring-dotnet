@@ -14,7 +14,7 @@ public class GetAvailableDollarsTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "name": "name",
               "total_funds": 1.1,
               "total_awarded_amount": 1.1,
@@ -26,8 +26,8 @@ public class GetAvailableDollarsTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/api/v1/scholarships/1/available-dollars")
-                    .WithParam("award_cycle_id", "1")
+                    .WithPath("/api/v1/scholarships/scholarshipId/available-dollars")
+                    .WithParam("award_cycle_id", "award_cycle_id")
                     .UsingGet()
             )
             .RespondWith(
@@ -38,7 +38,11 @@ public class GetAvailableDollarsTest : BaseMockServerTest
             );
 
         var response = await Client.Scholarships.GetAvailableDollarsAsync(
-            new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
+            new GetAvailableDollarsScholarshipsRequest
+            {
+                ScholarshipId = "scholarshipId",
+                AwardCycleId = "award_cycle_id",
+            }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

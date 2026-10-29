@@ -18,11 +18,12 @@ public partial class AwardCyclesClient : IAwardCyclesClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 4)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
             .Add("q", request.Q)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -312,6 +313,8 @@ public partial class AwardCyclesClient : IAwardCyclesClient
     /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
     /// Results are ordered by award-cycle id ascending. Filter with `?q=` (case-insensitive
     /// substring match on the award-cycle name).
+    ///
+    /// Assistant capability: `springiq_list_award_cycles`.
     /// </summary>
     /// <example><code>
     /// await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
@@ -333,6 +336,8 @@ public partial class AwardCyclesClient : IAwardCyclesClient
     /// marked next. When neither exists the endpoint returns `404 award_cycle_not_found` in the
     /// structured v1 error shape — in that case list all cycles via `GET /api/v1/award-cycles`
     /// and ask the user which one to use.
+    ///
+    /// Assistant capability: `springiq_get_current_award_cycle`.
     /// </summary>
     /// <example><code>
     /// await client.AwardCycles.GetCurrentAsync();

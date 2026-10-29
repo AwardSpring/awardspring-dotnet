@@ -18,13 +18,14 @@ public partial class GiftsClient : IGiftsClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 6)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 7)
             .Add("donor_id", request.DonorId)
             .Add("type", request.Type)
             .Add("q", request.Q)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -324,8 +325,10 @@ public partial class GiftsClient : IGiftsClient
 
     /// <summary>
     /// Returns one page at a time, newest first. Without filters the list covers the whole
-    /// institution. Narrow it with `donor_id` to scope to a single donor, `type` to
+    /// institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
     /// return only gifts or only pledges, and `q` to search the subject and description.
+    ///
+    /// Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
     /// await client.Gifts.ListAsync(new ListGiftsRequest());

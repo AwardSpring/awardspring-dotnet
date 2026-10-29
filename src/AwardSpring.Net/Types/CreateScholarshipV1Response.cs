@@ -15,11 +15,11 @@ public record CreateScholarshipV1Response : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// AwardSpring-assigned identifier of the newly created scholarship (`Opportunity.Id`).
-    /// Stable for the lifetime of the scholarship. Example: `1234`.
+    /// The stored ID of the newly created scholarship. Stable for the lifetime of the scholarship. Null on
+    /// a dry run, which creates nothing. Example: `"7HQ2KW9XR"`.
     /// </summary>
     [JsonPropertyName("scholarship_id")]
-    public int? ScholarshipId { get; set; }
+    public string? ScholarshipId { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

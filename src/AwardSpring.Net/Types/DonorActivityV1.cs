@@ -6,8 +6,7 @@ namespace AwardSpring.Net;
 
 /// <summary>
 /// A single item on a donor's merged activity timeline. Fields a given source doesn't populate are
-/// null/default; (Source, Id) is the item's identity since Id
-/// is unique only within a source.
+/// null/default.
 /// </summary>
 [Serializable]
 public record DonorActivityV1 : IJsonOnDeserialized
@@ -25,10 +24,11 @@ public record DonorActivityV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// Source-local identifier. Unique only within Source, not across the timeline.
+    /// The stored ID of the row the item came from (a logged activity, an email, a text message, an award
+    /// or a general application). Only a logged activity's ID opens the item on its own.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("source")]
     public DonorActivitySourceV1? Source { get; set; }
@@ -88,16 +88,16 @@ public record DonorActivityV1 : IJsonOnDeserialized
     public string? GiftType { get; set; }
 
     /// <summary>
-    /// Campaign association (logged monetary activities); null otherwise.
+    /// The stored ID of the campaign (logged monetary activities); null otherwise.
     /// </summary>
     [JsonPropertyName("campaign_id")]
-    public int? CampaignId { get; set; }
+    public string? CampaignId { get; set; }
 
     /// <summary>
-    /// Staff member the activity is assigned to (logged activities); null otherwise.
+    /// The stored ID of the staff member the activity is assigned to (logged activities); null otherwise.
     /// </summary>
     [JsonPropertyName("assigned_to_user_id")]
-    public int? AssignedToUserId { get; set; }
+    public string? AssignedToUserId { get; set; }
 
     /// <summary>
     /// Sender display name (system emails only); null otherwise.

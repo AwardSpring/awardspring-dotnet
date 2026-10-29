@@ -1,0 +1,47 @@
+using AwardSpring.Net.Core;
+using global::System.Text.Json.Serialization;
+
+namespace AwardSpring.Net;
+
+[Serializable]
+public record ListPaymentSchedulesRequest
+{
+    /// <summary>
+    /// Only the schedules configured on this award cycle (`?award_cycle_id=`), by its stored ID. An
+    /// award cycle the institution does not have returns `404 award_cycle_not_found`. Example:
+    /// `"4MZ8QW2TC"`.
+    /// </summary>
+    [JsonIgnore]
+    public string? AwardCycleId { get; set; }
+
+    /// <summary>
+    /// Page size. Defaults to 25. Values outside 1–100 are clamped rather than rejected.
+    /// </summary>
+    [JsonIgnore]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Opaque cursor. Pass the `next_cursor` from the previous page to page forward. Mutually exclusive with `ending_before`; if both are supplied, `starting_after` wins.
+    /// </summary>
+    [JsonIgnore]
+    public string? StartingAfter { get; set; }
+
+    /// <summary>
+    /// Opaque cursor. Pass the `previous_cursor` from the current page to page backward.
+    /// </summary>
+    [JsonIgnore]
+    public string? EndingBefore { get; set; }
+
+    /// <summary>
+    /// Optional extras to add to the response, comma-separated. `total_count` is the only supported value: it adds `total_count`, the number of records that match this request across all pages. The count is taken fresh at the moment of each request, so it can change while you page; ask for it on the first page. Without it, `total_count` is left out of the response. Asking or not never invalidates a cursor. Any other value returns `400 validation_failed`.
+    /// </summary>
+    [JsonIgnore]
+    public IEnumerable<ListPaymentSchedulesRequestIncludeItem> Include { get; set; } =
+        new List<ListPaymentSchedulesRequestIncludeItem>();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}

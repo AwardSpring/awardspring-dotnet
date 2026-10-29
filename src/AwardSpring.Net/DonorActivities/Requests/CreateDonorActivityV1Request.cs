@@ -7,10 +7,10 @@ namespace AwardSpring.Net;
 public record CreateDonorActivityV1Request
 {
     /// <summary>
-    /// AwardSpring donor (or donor-organization) user ID to attach the activity to.
+    /// The stored ID of the donor (or donor organization) to attach the activity to.
     /// </summary>
     [JsonIgnore]
-    public required int DonorId { get; set; }
+    public required string DonorId { get; set; }
 
     /// <summary>
     /// The kind of activity being logged. Supported values:
@@ -59,18 +59,19 @@ public record CreateDonorActivityV1Request
     public string? FundId { get; set; }
 
     /// <summary>
-    /// Optional campaign association for pledge activities. Only meaningful when ActivityType
-    /// is `LoggedPledge`; ignored for non-monetary activity types. Example: `42`.
+    /// Optional stored ID of a campaign at this institution, for pledge activities. Only meaningful when
+    /// ActivityType is `LoggedPledge`; ignored for non-monetary activity types.
+    /// Example: `"7HQ2KW9XR"`.
     /// </summary>
     [JsonPropertyName("campaign_id")]
-    public int? CampaignId { get; set; }
+    public string? CampaignId { get; set; }
 
     /// <summary>
-    /// Optional AwardSpring user ID of the staff member the activity is assigned to (e.g., the donor manager
-    /// who should follow up). Pass `null` or omit when no assignment is intended. Example: `12`.
+    /// Optional stored ID of the staff member the activity is assigned to (e.g., the donor manager who should
+    /// follow up). Pass `null` or omit when no assignment is intended. Example: `"4MZ8RT2PW"`.
     /// </summary>
     [JsonPropertyName("assigned_to_user_id")]
-    public int? AssignedToUserId { get; set; }
+    public string? AssignedToUserId { get; set; }
 
     /// <summary>
     /// Whether the activity is completed. For non-monetary activity types this is ignored (treated as `false`).

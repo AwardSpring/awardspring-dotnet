@@ -18,12 +18,13 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 6)
             .Add("q", request.Q)
             .Add("activity_type", request.ActivityType)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -475,8 +476,11 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
         }
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_list_donor_activities`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
     /// <example><code>
-    /// await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = 1 });
+    /// await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = "donorId" });
     /// </code></example>
     public WithRawResponseTask<DonorActivityV1ListResponse> ListAsync(
         ListDonorActivitiesRequest request,
@@ -511,9 +515,12 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
     /// different body returns `422 idempotency_key_request_mismatch`; a concurrent retry while the first
     /// call is still executing returns `409 idempotency_key_in_flight`. Only 2xx responses are cached —
     /// 4xx/5xx leave the key available for retry with a corrected payload.
+    ///
+    ///
+    /// Assistant capability: `springiq_create_activity`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
-    /// await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = 1 });
+    /// await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = "donorId" });
     /// </code></example>
     public WithRawResponseTask<CreateDonorActivityV1Response> CreateAsync(
         CreateDonorActivityV1Request request,
@@ -526,9 +533,12 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
         );
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_donor_activity`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
     /// <example><code>
     /// await client.DonorActivities.GetAsync(
-    ///     new GetDonorActivitiesRequest { DonorId = 1, ActivityId = 1 }
+    ///     new GetDonorActivitiesRequest { DonorId = "donorId", ActivityId = "activityId" }
     /// );
     /// </code></example>
     public WithRawResponseTask<DonorActivityV1> GetAsync(

@@ -18,11 +18,12 @@ public partial class FundsClient : IFundsClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 4)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
             .Add("q", request.Q)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -161,6 +162,8 @@ public partial class FundsClient : IFundsClient
     /// `data`). Page forward by passing the returned `next_cursor` as
     /// `starting_after`. Filter with `?q=` (case-insensitive substring match on the
     /// fund name).
+    ///
+    /// Assistant capability: `springiq_list_funds`. Required permission: Funds (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
     /// await client.Funds.ListAsync(new ListFundsRequest());

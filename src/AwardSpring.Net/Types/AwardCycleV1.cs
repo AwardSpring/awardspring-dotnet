@@ -25,10 +25,10 @@ public record AwardCycleV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// AwardSpring award-cycle identifier — also the cursor anchor for paging.
+    /// The award cycle's stored ID. Example: `"4MZ8QW2TC"`.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Award-cycle name as configured by the institution (e.g. "2025-2026").

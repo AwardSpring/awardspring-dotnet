@@ -13,7 +13,7 @@ public class GetCurrentTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "name": "name",
               "is_current": true,
               "is_next": true,

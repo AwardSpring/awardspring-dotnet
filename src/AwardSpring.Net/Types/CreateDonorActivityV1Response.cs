@@ -27,10 +27,11 @@ public record CreateDonorActivityV1Response : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// AwardSpring-assigned identifier of the newly created activity row. Stable for the lifetime of the activity.
+    /// The new activity's stored ID: 9 characters, the same ID the donor's timeline shows for it. A dry run
+    /// returns `null`, because nothing was saved.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Echo of the activity type that was saved (e.g. `"LoggedEmail"`, `"LoggedPledge"`).
@@ -69,16 +70,16 @@ public record CreateDonorActivityV1Response : IJsonOnDeserialized
     public string? FundId { get; set; }
 
     /// <summary>
-    /// Campaign association, or `null` for non-monetary activity types.
+    /// The stored ID of the campaign the pledge belongs to, or `null` for non-monetary activity types.
     /// </summary>
     [JsonPropertyName("campaign_id")]
-    public int? CampaignId { get; set; }
+    public string? CampaignId { get; set; }
 
     /// <summary>
-    /// Staff member the activity was assigned to, or `null` when not assigned.
+    /// The stored ID of the staff member the activity was assigned to, or `null` when not assigned.
     /// </summary>
     [JsonPropertyName("assigned_to_user_id")]
-    public int? AssignedToUserId { get; set; }
+    public string? AssignedToUserId { get; set; }
 
     /// <summary>
     /// Completion flag — meaningful only for `LoggedPledge`. Always `false` for non-monetary types.

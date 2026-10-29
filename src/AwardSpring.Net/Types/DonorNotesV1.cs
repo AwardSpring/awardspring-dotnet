@@ -19,8 +19,11 @@ public record DonorNotesV1 : IJsonOnDeserialized
     [JsonPropertyName("object")]
     public string? Object { get; set; }
 
+    /// <summary>
+    /// The stored ID of the donor these notes belong to.
+    /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("notes")]
     public string? Notes { get; set; }

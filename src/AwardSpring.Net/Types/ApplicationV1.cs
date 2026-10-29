@@ -23,22 +23,22 @@ public record ApplicationV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// Application identifier — also the cursor anchor for the list.
+    /// The application's stored ID. An award of this application has the same `id`.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
-    /// The applicant's user record id — the same value as the student resource's `id` (see the Students endpoints).
+    /// The stored ID of the applicant's user record: the same value as the student resource's `id` (see the Students endpoints).
     /// </summary>
     [JsonPropertyName("user_id")]
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     /// <summary>
-    /// Identifier of the scholarship applied to (see the Scholarships endpoints).
+    /// The stored ID of the scholarship applied to (see the Scholarships endpoints).
     /// </summary>
     [JsonPropertyName("scholarship_id")]
-    public int? ScholarshipId { get; set; }
+    public string? ScholarshipId { get; set; }
 
     /// <summary>
     /// Name of the scholarship applied to, denormalized onto the row for convenience.
@@ -47,10 +47,10 @@ public record ApplicationV1 : IJsonOnDeserialized
     public string? ScholarshipName { get; set; }
 
     /// <summary>
-    /// Identifier of the award cycle the application belongs to (see the Award Cycles endpoints).
+    /// The stored ID of the award cycle the application belongs to (see the Award Cycles endpoints).
     /// </summary>
     [JsonPropertyName("award_cycle_id")]
-    public int? AwardCycleId { get; set; }
+    public string? AwardCycleId { get; set; }
 
     /// <summary>
     /// Name of the award cycle the application belongs to, denormalized onto the row for convenience.

@@ -7,10 +7,10 @@ namespace AwardSpring.Net;
 public record GetDonorActivitiesRequest
 {
     [JsonIgnore]
-    public required int DonorId { get; set; }
+    public required string DonorId { get; set; }
 
     [JsonIgnore]
-    public required int ActivityId { get; set; }
+    public required string ActivityId { get; set; }
 
     [JsonIgnore]
     public DonorActivitySourceV1? Source { get; set; }

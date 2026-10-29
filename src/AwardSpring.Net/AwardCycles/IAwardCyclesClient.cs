@@ -9,6 +9,8 @@ public partial interface IAwardCyclesClient
     /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
     /// Results are ordered by award-cycle id ascending. Filter with `?q=` (case-insensitive
     /// substring match on the award-cycle name).
+    ///
+    /// Assistant capability: `springiq_list_award_cycles`.
     /// </summary>
     WithRawResponseTask<AwardCycleV1ListResponse> ListAsync(
         ListAwardCyclesRequest request,
@@ -22,6 +24,8 @@ public partial interface IAwardCyclesClient
     /// marked next. When neither exists the endpoint returns `404 award_cycle_not_found` in the
     /// structured v1 error shape — in that case list all cycles via `GET /api/v1/award-cycles`
     /// and ask the user which one to use.
+    ///
+    /// Assistant capability: `springiq_get_current_award_cycle`.
     /// </summary>
     WithRawResponseTask<AwardCycleV1> GetCurrentAsync(
         RequestOptions? options = null,

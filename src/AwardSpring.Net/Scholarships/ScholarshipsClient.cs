@@ -18,11 +18,12 @@ public partial class ScholarshipsClient : IScholarshipsClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 4)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
             .Add("q", request.Q)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -332,11 +333,12 @@ public partial class ScholarshipsClient : IScholarshipsClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 4)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
             .Add("award_cycle_id", request.AwardCycleId)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -646,12 +648,13 @@ public partial class ScholarshipsClient : IScholarshipsClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 5)
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 6)
             .Add("award_cycle_id", request.AwardCycleId)
             .Add("scholarship_id", request.ScholarshipId)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
+            .Add("include", request.Include)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new AwardSpring.Net.Core.HeadersBuilder.Builder()
@@ -805,6 +808,8 @@ public partial class ScholarshipsClient : IScholarshipsClient
     /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
     /// Results are ordered by scholarship id ascending.
     /// Filter with `?q=` (case-insensitive substring match on the scholarship name).
+    ///
+    /// Assistant capability: `springiq_list_scholarships`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
     /// await client.Scholarships.ListAsync(new ListScholarshipsRequest());
@@ -845,9 +850,12 @@ public partial class ScholarshipsClient : IScholarshipsClient
     /// `422 idempotency_key_request_mismatch`; a concurrent retry while the first call is
     /// still executing returns `409 idempotency_key_in_flight`. Only 2xx responses are
     /// cached — 4xx/5xx leave the key available for retry with a corrected payload.
+    ///
+    ///
+    /// Assistant capability: `springiq_create_scholarship`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
-    /// await client.Scholarships.CreateAsync(new CreateScholarshipV1Request { AwardCycleId = 1 });
+    /// await client.Scholarships.CreateAsync(new CreateScholarshipV1Request());
     /// </code></example>
     public WithRawResponseTask<CreateScholarshipV1Response> CreateAsync(
         CreateScholarshipV1Request request,
@@ -860,9 +868,12 @@ public partial class ScholarshipsClient : IScholarshipsClient
         );
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     /// <example><code>
     /// await client.Scholarships.ListAvailableDollarsAsync(
-    ///     new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
+    ///     new ListAvailableDollarsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
     /// );
     /// </code></example>
     public WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsAsync(
@@ -876,9 +887,16 @@ public partial class ScholarshipsClient : IScholarshipsClient
         );
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     /// <example><code>
     /// await client.Scholarships.GetAvailableDollarsAsync(
-    ///     new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
+    ///     new GetAvailableDollarsScholarshipsRequest
+    ///     {
+    ///         ScholarshipId = "scholarshipId",
+    ///         AwardCycleId = "award_cycle_id",
+    ///     }
     /// );
     /// </code></example>
     public WithRawResponseTask<ScholarshipAvailableDollarsV1> GetAvailableDollarsAsync(
@@ -892,9 +910,12 @@ public partial class ScholarshipsClient : IScholarshipsClient
         );
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_awarded_students`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
     /// <example><code>
     /// await client.Scholarships.ListAwardedStudentsAsync(
-    ///     new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
+    ///     new ListAwardedStudentsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
     /// );
     /// </code></example>
     public WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsAsync(

@@ -7,10 +7,10 @@ namespace AwardSpring.Net;
 public record CreateGiftV1Request
 {
     /// <summary>
-    /// The donor (or donor organization) user id the gift is attributed to. Required.
+    /// The stored ID of the donor (or donor organization) the gift is attributed to. Required.
     /// </summary>
     [JsonPropertyName("donor_id")]
-    public int? DonorId { get; set; }
+    public string? DonorId { get; set; }
 
     /// <summary>
     /// `gift` or `pledge`. Defaults to `gift` when omitted. Soft credits are only
@@ -57,8 +57,11 @@ public record CreateGiftV1Request
     [JsonPropertyName("fund_id")]
     public string? FundId { get; set; }
 
+    /// <summary>
+    /// The stored ID of a campaign at this institution to attribute the gift to. Optional.
+    /// </summary>
     [JsonPropertyName("campaign_id")]
-    public int? CampaignId { get; set; }
+    public string? CampaignId { get; set; }
 
     /// <summary>
     /// Only meaningful for pledges — marks the pledge fulfilled. Ignored for gifts.
@@ -67,10 +70,11 @@ public record CreateGiftV1Request
     public bool? IsCompleted { get; set; }
 
     /// <summary>
-    /// Officer the record is assigned to. Must be a user in this tenant when supplied.
+    /// The stored ID of the officer the record is assigned to. Must be a person at this institution when
+    /// supplied.
     /// </summary>
     [JsonPropertyName("assigned_to_user_id")]
-    public int? AssignedToUserId { get; set; }
+    public string? AssignedToUserId { get; set; }
 
     /// <summary>
     /// Up to three soft-credit recipients. Honored on gifts only; ignored for pledges.

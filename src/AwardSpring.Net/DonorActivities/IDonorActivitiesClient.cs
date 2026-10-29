@@ -2,6 +2,9 @@ namespace AwardSpring.Net;
 
 public partial interface IDonorActivitiesClient
 {
+    /// <summary>
+    /// Assistant capability: `springiq_list_donor_activities`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
     WithRawResponseTask<DonorActivityV1ListResponse> ListAsync(
         ListDonorActivitiesRequest request,
         RequestOptions? options = null,
@@ -30,6 +33,9 @@ public partial interface IDonorActivitiesClient
     /// different body returns `422 idempotency_key_request_mismatch`; a concurrent retry while the first
     /// call is still executing returns `409 idempotency_key_in_flight`. Only 2xx responses are cached —
     /// 4xx/5xx leave the key available for retry with a corrected payload.
+    ///
+    ///
+    /// Assistant capability: `springiq_create_activity`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
     WithRawResponseTask<CreateDonorActivityV1Response> CreateAsync(
         CreateDonorActivityV1Request request,
@@ -37,6 +43,9 @@ public partial interface IDonorActivitiesClient
         CancellationToken cancellationToken = default
     );
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_donor_activity`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
     WithRawResponseTask<DonorActivityV1> GetAsync(
         GetDonorActivitiesRequest request,
         RequestOptions? options = null,

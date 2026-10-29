@@ -57,14 +57,14 @@ await client.Donors.ListAsync(new ListDonorsRequest());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Donors.GetAsync(new GetDonorsRequest { Id = 1 });
+await client.Donors.GetAsync(new GetDonorsRequest { Id = "id" });
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = 1 });
+await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = "donorId" });
 ```
 
 ```csharp
@@ -72,7 +72,7 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.DonorActivities.GetAsync(
-    new GetDonorActivitiesRequest { DonorId = 1, ActivityId = 1 }
+    new GetDonorActivitiesRequest { DonorId = "donorId", ActivityId = "activityId" }
 );
 ```
 
@@ -95,7 +95,7 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.Scholarships.ListAvailableDollarsAsync(
-    new ListAvailableDollarsScholarshipsRequest { AwardCycleId = 1 }
+    new ListAvailableDollarsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
 );
 ```
 
@@ -104,7 +104,11 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.Scholarships.GetAvailableDollarsAsync(
-    new GetAvailableDollarsScholarshipsRequest { ScholarshipId = 1, AwardCycleId = 1 }
+    new GetAvailableDollarsScholarshipsRequest
+    {
+        ScholarshipId = "scholarshipId",
+        AwardCycleId = "award_cycle_id",
+    }
 );
 ```
 
@@ -113,7 +117,7 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.Scholarships.ListAwardedStudentsAsync(
-    new ListAwardedStudentsScholarshipsRequest { AwardCycleId = 1 }
+    new ListAwardedStudentsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
 );
 ```
 
@@ -128,7 +132,7 @@ await client.Students.ListAsync(new ListStudentsRequest());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Students.GetAsync(new GetStudentsRequest { Id = 1 });
+await client.Students.GetAsync(new GetStudentsRequest { Id = "id" });
 ```
 
 ```csharp
@@ -170,6 +174,27 @@ await client.AwardCycles.GetCurrentAsync();
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
+await client.PaymentSchedules.ListAsync(new ListPaymentSchedulesRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.People.ListAsync(new ListPeopleRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Departments.ListAsync(new ListDepartmentsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
 await client.Donors.CreateAsync(new CreateDonorV1Request());
 ```
 
@@ -177,21 +202,21 @@ await client.Donors.CreateAsync(new CreateDonorV1Request());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = 1 });
+await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = "id" });
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Donors.UpdateNotesAsync(new UpdateDonorNotesV1Request { Id = 1 });
+await client.Donors.UpdateNotesAsync(new UpdateDonorNotesV1Request { Id = "id" });
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = 1 });
+await client.DonorActivities.CreateAsync(new CreateDonorActivityV1Request { DonorId = "donorId" });
 ```
 
 ```csharp
@@ -205,7 +230,42 @@ await client.Gifts.CreateAsync(new CreateGiftV1Request());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.CreateAsync(new CreateScholarshipV1Request { AwardCycleId = 1 });
+await client.Scholarships.CreateAsync(new CreateScholarshipV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Departments.CreateAsync(new CreateDepartmentV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Students.CreateAsync(new CreateStudentV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Reviewers.CreateAsync(new CreateReviewerV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.People.ArchiveAsync(new ArchivePeopleRequest { Id = "id" });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.People.RestoreAsync(new RestorePeopleRequest { Id = "id" });
 ```
 
 ## Environments
@@ -382,25 +442,25 @@ This SDK uses forward-compatible enums that can handle unknown values gracefully
 using AwardSpring.Net;
 
 // Using a built-in value
-var createDonorActivityV1RequestActivityType = CreateDonorActivityV1RequestActivityType.LoggedEmail;
+var listApplicationsRequestIncludeItem = ListApplicationsRequestIncludeItem.TotalCount;
 
 // Using a custom value
-var customCreateDonorActivityV1RequestActivityType = CreateDonorActivityV1RequestActivityType.FromCustom("custom-value");
+var customListApplicationsRequestIncludeItem = ListApplicationsRequestIncludeItem.FromCustom("custom-value");
 
 // Using in a switch statement
-switch (createDonorActivityV1RequestActivityType.Value)
+switch (listApplicationsRequestIncludeItem.Value)
 {
-    case CreateDonorActivityV1RequestActivityType.Values.LoggedEmail:
-        Console.WriteLine("LoggedEmail");
+    case ListApplicationsRequestIncludeItem.Values.TotalCount:
+        Console.WriteLine("TotalCount");
         break;
     default:
-        Console.WriteLine($"Unknown value: {createDonorActivityV1RequestActivityType.Value}");
+        Console.WriteLine($"Unknown value: {listApplicationsRequestIncludeItem.Value}");
         break;
 }
 
 // Explicit casting
-string createDonorActivityV1RequestActivityTypeString = (string)CreateDonorActivityV1RequestActivityType.LoggedEmail;
-CreateDonorActivityV1RequestActivityType createDonorActivityV1RequestActivityTypeFromString = (CreateDonorActivityV1RequestActivityType)"LoggedEmail";
+string listApplicationsRequestIncludeItemString = (string)ListApplicationsRequestIncludeItem.TotalCount;
+ListApplicationsRequestIncludeItem listApplicationsRequestIncludeItemFromString = (ListApplicationsRequestIncludeItem)"total_count";
 ```
 
 ## Contributing

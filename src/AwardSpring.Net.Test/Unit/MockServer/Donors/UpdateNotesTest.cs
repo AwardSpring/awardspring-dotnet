@@ -18,7 +18,7 @@ public class UpdateNotesTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "notes": "notes"
             }
             """;
@@ -27,7 +27,7 @@ public class UpdateNotesTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/api/v1/donors/1/notes")
+                    .WithPath("/api/v1/donors/id/notes")
                     .WithHeader("Content-Type", "application/json")
                     .UsingPut()
                     .WithBodyAsJson(requestJson)
@@ -40,7 +40,7 @@ public class UpdateNotesTest : BaseMockServerTest
             );
 
         var response = await Client.Donors.UpdateNotesAsync(
-            new UpdateDonorNotesV1Request { Id = 1 }
+            new UpdateDonorNotesV1Request { Id = "id" }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

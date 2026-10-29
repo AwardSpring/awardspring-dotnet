@@ -18,7 +18,8 @@ namespace AwardSpring.Net;
 /// }
 /// ````url` echoes the path the collection was served from. To page forward, send
 /// `next_cursor` back as `starting_after`; on the last page `has_more` is
-/// `false` and `next_cursor` is null.
+/// `false` and `next_cursor` is null. A request with `include=total_count` also
+/// gets `total_count`.
 /// </summary>
 [Serializable]
 public record ApplicationV1ListResponse : IJsonOnDeserialized
@@ -57,6 +58,14 @@ public record ApplicationV1ListResponse : IJsonOnDeserialized
     /// </summary>
     [JsonPropertyName("previous_cursor")]
     public string? PreviousCursor { get; set; }
+
+    /// <summary>
+    /// The number of records that match the request across all pages, counted fresh on each
+    /// request. Present only when the request includes `include=total_count`; otherwise the
+    /// key is omitted.
+    /// </summary>
+    [JsonPropertyName("total_count")]
+    public int? TotalCount { get; set; }
 
     /// <summary>
     /// The page of items.

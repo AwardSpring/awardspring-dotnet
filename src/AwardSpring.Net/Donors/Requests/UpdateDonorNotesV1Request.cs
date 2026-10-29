@@ -7,7 +7,7 @@ namespace AwardSpring.Net;
 public record UpdateDonorNotesV1Request
 {
     [JsonIgnore]
-    public required int Id { get; set; }
+    public required string Id { get; set; }
 
     [JsonPropertyName("notes")]
     public string? Notes { get; set; }

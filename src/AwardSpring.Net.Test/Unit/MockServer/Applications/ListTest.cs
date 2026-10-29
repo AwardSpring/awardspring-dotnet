@@ -18,13 +18,14 @@ public class ListTest : BaseMockServerTest
               "has_more": true,
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
+              "total_count": 1,
               "data": [
                 {
-                  "id": 1,
-                  "user_id": 1,
-                  "scholarship_id": 1,
+                  "id": "id",
+                  "user_id": "user_id",
+                  "scholarship_id": "scholarship_id",
                   "scholarship_name": "scholarship_name",
-                  "award_cycle_id": 1,
+                  "award_cycle_id": "award_cycle_id",
                   "award_cycle_name": "award_cycle_name",
                   "status": "status",
                   "applied_date": 1

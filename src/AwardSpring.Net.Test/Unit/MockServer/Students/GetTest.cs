@@ -14,7 +14,7 @@ public class GetTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "first_name": "first_name",
               "last_name": "last_name",
               "email": "email",
@@ -26,7 +26,7 @@ public class GetTest : BaseMockServerTest
 
         Server
             .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/api/v1/students/1").UsingGet()
+                WireMock.RequestBuilders.Request.Create().WithPath("/api/v1/students/id").UsingGet()
             )
             .RespondWith(
                 WireMock
@@ -35,7 +35,7 @@ public class GetTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Students.GetAsync(new GetStudentsRequest { Id = 1 });
+        var response = await Client.Students.GetAsync(new GetStudentsRequest { Id = "id" });
         JsonAssert.AreEqual(response, mockResponse);
     }
 }

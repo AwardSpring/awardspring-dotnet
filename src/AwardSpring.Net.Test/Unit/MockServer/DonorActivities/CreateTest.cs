@@ -18,15 +18,15 @@ public class CreateTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "id": 1,
+              "id": "id",
               "activity_type": "activity_type",
               "subject": "subject",
               "description": "description",
               "date": 1,
               "amount": 1.1,
               "fund_id": "fund_id",
-              "campaign_id": 1,
-              "assigned_to_user_id": 1,
+              "campaign_id": "campaign_id",
+              "assigned_to_user_id": "assigned_to_user_id",
               "is_completed": true
             }
             """;
@@ -35,7 +35,7 @@ public class CreateTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/api/v1/donors/1/activities")
+                    .WithPath("/api/v1/donors/donorId/activities")
                     .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
@@ -48,7 +48,7 @@ public class CreateTest : BaseMockServerTest
             );
 
         var response = await Client.DonorActivities.CreateAsync(
-            new CreateDonorActivityV1Request { DonorId = 1 }
+            new CreateDonorActivityV1Request { DonorId = "donorId" }
         );
         JsonAssert.AreEqual(response, mockResponse);
     }

@@ -25,10 +25,10 @@ public record ScholarshipListItemV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// The scholarship's identifier — also the cursor anchor used for paging.
+    /// The scholarship's stored ID. Example: `"7HQ2KW9XR"`.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Scholarship name as configured by the institution.
@@ -49,10 +49,10 @@ public record ScholarshipListItemV1 : IJsonOnDeserialized
     public bool? IsActive { get; set; }
 
     /// <summary>
-    /// The award cycle the scholarship belongs to.
+    /// The stored ID of the award cycle the scholarship belongs to.
     /// </summary>
     [JsonPropertyName("award_cycle_id")]
-    public int? AwardCycleId { get; set; }
+    public string? AwardCycleId { get; set; }
 
     /// <summary>
     /// When the scholarship's application window opens (UTC epoch seconds).

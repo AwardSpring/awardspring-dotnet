@@ -14,8 +14,11 @@ public record SoftCreditV1 : IJsonOnDeserialized
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
+    /// <summary>
+    /// The stored ID of the person credited, or `null` for a name-only credit.
+    /// </summary>
     [JsonPropertyName("user_id")]
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
