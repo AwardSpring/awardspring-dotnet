@@ -264,6 +264,18 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
+                    case 403:
+                        throw new ForbiddenError(
+                            JsonUtils.Deserialize<V1ErrorEnvelope>(responseBody),
+                            rawResponse: new AwardSpring.Net.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
                     case 404:
                         throw new NotFoundError(
                             JsonUtils.Deserialize<V1ErrorEnvelope>(responseBody),

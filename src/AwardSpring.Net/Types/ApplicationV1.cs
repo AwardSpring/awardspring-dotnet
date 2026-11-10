@@ -71,6 +71,14 @@ public record ApplicationV1 : IJsonOnDeserialized
     [JsonPropertyName("applied_date")]
     public int? AppliedDate { get; set; }
 
+    /// <summary>
+    /// The student's entry-gate result on this award cycle's general application: `qualified`,
+    /// `blocked_at_entry`, `pending`, or null when the application has no entry questions or
+    /// the student was never evaluated.
+    /// </summary>
+    [JsonPropertyName("entry_outcome")]
+    public string? EntryOutcome { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

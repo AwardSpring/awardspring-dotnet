@@ -23,7 +23,7 @@ public class ListTest : BaseMockServerTest
                 {
                   "id": "id",
                   "fund_id": "fund_id",
-                  "remaining_balance": 1,
+                  "remaining_balance": 1.1,
                   "fund_type": "fund_type",
                   "is_endowed": true
                 }

@@ -12,6 +12,8 @@ public partial interface IAwardspringApiClient
     public IGiftsClient Gifts { get; }
     public IPaymentSchedulesClient PaymentSchedules { get; }
     public IPeopleClient People { get; }
+    public IReviewGroupsClient ReviewGroups { get; }
+    public IReviewerAssignmentsClient ReviewerAssignments { get; }
     public IReviewersClient Reviewers { get; }
     public IScholarshipsClient Scholarships { get; }
     public IStudentsClient Students { get; }

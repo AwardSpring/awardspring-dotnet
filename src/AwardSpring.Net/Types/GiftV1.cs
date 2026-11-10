@@ -32,18 +32,35 @@ public record GiftV1 : IJsonOnDeserialized
     [JsonPropertyName("donor_id")]
     public string? DonorId { get; set; }
 
+    /// <summary>
+    /// `gift` for money already given, or `pledge` for money promised.
+    /// </summary>
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 
+    /// <summary>
+    /// How the gift was given: one of `None`, `Cash`, `Check`, `CreditOrDebit`,
+    /// `BankTransfer`, `StockOrProperty`, `InKind`, `PayrollDeduction`, `Online` or
+    /// `Other`. `None` when no payment type was recorded.
+    /// </summary>
     [JsonPropertyName("gift_type")]
     public string? GiftType { get; set; }
 
+    /// <summary>
+    /// The amount given or pledged, or `null` when no amount was recorded.
+    /// </summary>
     [JsonPropertyName("amount")]
     public double? Amount { get; set; }
 
+    /// <summary>
+    /// The short title of the gift or pledge.
+    /// </summary>
     [JsonPropertyName("subject")]
     public string? Subject { get; set; }
 
+    /// <summary>
+    /// Longer notes about the gift or pledge, or `null`.
+    /// </summary>
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
@@ -59,15 +76,28 @@ public record GiftV1 : IJsonOnDeserialized
     [JsonPropertyName("campaign_id")]
     public string? CampaignId { get; set; }
 
+    /// <summary>
+    /// For a pledge, whether it has been fulfilled.
+    /// </summary>
     [JsonPropertyName("is_completed")]
     public bool? IsCompleted { get; set; }
 
+    /// <summary>
+    /// Whether a gift acknowledgement has been sent to the donor for this gift.
+    /// </summary>
     [JsonPropertyName("gift_acknowledgement_sent")]
     public bool? GiftAcknowledgementSent { get; set; }
 
+    /// <summary>
+    /// The date of the gift or pledge, in the institution's local time zone (UTC epoch seconds on the wire).
+    /// </summary>
     [JsonPropertyName("date")]
     public int? Date { get; set; }
 
+    /// <summary>
+    /// Up to three people or names credited for the gift besides the donor. An empty list when there are
+    /// none.
+    /// </summary>
     [JsonPropertyName("soft_credits")]
     public IEnumerable<SoftCreditV1>? SoftCredits { get; set; }
 

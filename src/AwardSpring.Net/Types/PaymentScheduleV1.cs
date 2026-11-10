@@ -25,10 +25,11 @@ public record PaymentScheduleV1 : IJsonOnDeserialized
     public string? Object { get; set; }
 
     /// <summary>
-    /// AwardSpring payment-schedule identifier — also the cursor anchor for paging. Example: `12`.
+    /// The payment schedule's stored ID: 9 characters, capital letters and numbers. Pass it in a scholarship's
+    /// `payment_schedule_ids`. Example: `"7HN4KX2RB"`.
     /// </summary>
     [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Payment schedule name as configured by the institution (e.g. "Spring payment").

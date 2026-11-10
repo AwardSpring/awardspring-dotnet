@@ -28,8 +28,13 @@ public record FundListItemV1 : IJsonOnDeserialized
     [JsonPropertyName("fund_id")]
     public string? FundId { get; set; }
 
+    /// <summary>
+    /// The money left in the fund, in dollars, rounded to two decimal places: every deposit and gift into it, less
+    /// every disbursement and decided award paid from it, over the fund's whole history.
+    /// `0` when the fund has had no money in or out. Example: `1500.25`.
+    /// </summary>
     [JsonPropertyName("remaining_balance")]
-    public int? RemainingBalance { get; set; }
+    public double? RemainingBalance { get; set; }
 
     [JsonPropertyName("fund_type")]
     public string? FundType { get; set; }

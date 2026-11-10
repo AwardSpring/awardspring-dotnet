@@ -68,4 +68,42 @@ public partial interface IStudentsClient
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// Changes a student's `first_name`, `last_name`, `email`, `student_id` and `phone`,
+    /// with the same checks as changing them on the student's account in the AwardSpring admin interface. The
+    /// student is named by their `id` from the students list. The change is recorded under your API key.
+    ///
+    /// <b>Only what you send changes:</b> a field left out of the body, or sent as `null`, stays as it is.
+    /// An empty `phone` or `student_id` clears it. A name or email cannot be cleared: an empty one returns
+    /// `400 validation_failed` naming the field. Any other field in the body, such as `gpa`, returns
+    /// `400 validation_failed` naming it, and nothing is saved.
+    ///
+    /// <b>What is refused:</b> a `student_id` already on another account at the institution, a value longer
+    /// than its limit, or a malformed email returns `400 validation_failed` naming the field. An email any
+    /// other account at the institution has, ignoring upper and lower case and including an archived account,
+    /// returns `400 email_already_exists` naming `email`. Changing the email changes how the student
+    /// signs in, and no email is sent to them about it. A refused request saves nothing.
+    ///
+    /// <b>Administrator accounts:</b> a program with an API key never changes an account that holds an
+    /// administrator role. A student who is also an administrator returns `400 validation_failed` naming
+    /// `id`; change them in AwardSpring instead.
+    ///
+    ///
+    /// An `id` that names no student at the institution, including a donor's or reviewer's `id`,
+    /// returns `404 student_not_found`, naming `id` in `param`. Send `dry_run` to run every
+    /// check without saving: the response shows the student as the change would leave them. The student resource
+    /// has no phone, so a phone change does not appear in the response.
+    ///
+    /// <b>Idempotency:</b> the request supports an optional `Idempotency-Key` header (any
+    /// printable-ASCII string, 1–255 chars — UUIDs work well). When supplied, the same key plus the same
+    /// request body within 24 hours returns the original response verbatim without changing the student again.
+    /// The same key with a different body returns `422 idempotency_key_request_mismatch`; a concurrent retry
+    /// while the first call is still executing returns `409 idempotency_key_in_flight`.
+    /// </summary>
+    WithRawResponseTask<StudentV1> UpdateAsync(
+        UpdateStudentV1Request request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    );
 }

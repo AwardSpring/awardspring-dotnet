@@ -87,7 +87,21 @@ await client.Gifts.ListAsync(new ListGiftsRequest());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
+await client.Gifts.GetAsync(new GetGiftsRequest { Id = "id" });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
 await client.Scholarships.ListAsync(new ListScholarshipsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.GetAsync(new GetScholarshipsRequest { ScholarshipId = "scholarshipId" });
 ```
 
 ```csharp
@@ -174,6 +188,15 @@ await client.AwardCycles.GetCurrentAsync();
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
+await client.AwardCycles.GetAvailableDollarsSummaryAsync(
+    new GetAvailableDollarsSummaryAwardCyclesRequest { AwardCycleId = "awardCycleId" }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
 await client.PaymentSchedules.ListAsync(new ListPaymentSchedulesRequest());
 ```
 
@@ -189,6 +212,38 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.Departments.ListAsync(new ListDepartmentsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.ReviewGroups.ListAsync(
+    new ListReviewGroupsRequest { AwardCycleId = "award_cycle_id" }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.ReviewerAssignments.ListAsync(new ListReviewerAssignmentsRequest());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.ReviewerAssignments.GetJobAsync(
+    new GetJobReviewerAssignmentsRequest { JobId = "job_id" }
+);
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.ReviewerAssignments.ListJobRowsAsync(new ListJobRowsReviewerAssignmentsRequest());
 ```
 
 ```csharp
@@ -230,7 +285,23 @@ await client.Gifts.CreateAsync(new CreateGiftV1Request());
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
+await client.Gifts.UpdateAsync(new UpdateGiftV1Request { Id = "id" });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
 await client.Scholarships.CreateAsync(new CreateScholarshipV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Scholarships.UpdateAsync(
+    new UpdateScholarshipV1Request { ScholarshipId = "scholarshipId" }
+);
 ```
 
 ```csharp
@@ -245,6 +316,13 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.Students.CreateAsync(new CreateStudentV1Request());
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.Students.UpdateAsync(new UpdateStudentV1Request { Id = "id" });
 ```
 
 ```csharp
@@ -266,6 +344,13 @@ using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
 await client.People.RestoreAsync(new RestorePeopleRequest { Id = "id" });
+```
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+await client.ReviewerAssignments.ChangeAsync(new ChangeReviewerAssignmentsV1Request());
 ```
 
 ## Environments

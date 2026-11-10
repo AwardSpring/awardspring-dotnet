@@ -168,6 +168,72 @@ await client.AwardCycles.GetCurrentAsync();
 </dl>
 </details>
 
+<details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">GetAvailableDollarsSummaryAsync</a>(GetAvailableDollarsSummaryAwardCyclesRequest { ... }) -> WithRawResponseTask&lt;AvailableDollarsSummaryV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one available-dollars summary (`object: "available_dollars_summary"`): the budget, awarded and remaining amounts of
+every active scholarship in the award cycle added together, and how many of those scholarships are
+over-awarded. The totals add up the same scholarships and amounts that
+`GET /api/v1/scholarships/available-dollars` lists for the same cycle, so use this endpoint for a
+cycle-wide total instead of paging through that list. An over-awarded scholarship (one that has awarded
+more than its budget) is included and counts against `total_amount_remaining`. A cycle with no
+active scholarships returns zeros, not an error. An award cycle ID the institution does not have returns
+`404 award_cycle_not_found` naming `awardCycleId`; to find the cycle running now, call
+`GET /api/v1/award-cycles/current`.
+
+Assistant capability: `springiq_get_available_dollars_summary`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AwardCycles.GetAvailableDollarsSummaryAsync(
+    new GetAvailableDollarsSummaryAwardCyclesRequest { AwardCycleId = "awardCycleId" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `GetAvailableDollarsSummaryAwardCyclesRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Awards
 <details><summary><code>client.Awards.<a href="/src/AwardSpring.Net/Awards/AwardsClient.cs">ListAsync</a>(ListAwardsRequest { ... }) -> WithRawResponseTask&lt;AwardV1ListResponse&gt;</code></summary>
 <dl>
@@ -720,7 +786,8 @@ await client.Donors.CreateAsync(new CreateDonorV1Request());
 <dd>
 
 Includes giving totals for the donor's lifetime and the current year, their most recent
-gift, and their notes. `id` is the donor's stored ID. Returns `404 donor_not_found`
+gift, their notes, the tags on the donor, and their answers to the institution's donor custom
+fields. `id` is the donor's stored ID. Returns `404 donor_not_found`
 naming `id` if no such donor belongs to this institution.
 
 Assistant capability: `springiq_get_donor_profile`. Required permission: Donors (applies when called on behalf of a signed-in person).
@@ -779,6 +846,10 @@ await client.Donors.GetAsync(new GetDonorsRequest { Id = "id" });
 
 Only the fields present in the request body change; anything omitted is left alone. Send
 `dry_run` to validate the request without saving it.
+
+<b>Administrator accounts:</b> a program with an API key never changes an account that holds an
+administrator role. A donor who is also an administrator returns `400 validation_failed` naming
+`id`, and nothing is saved; change them in AwardSpring instead.
 </dd>
 </dl>
 </dd>
@@ -834,6 +905,10 @@ await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = "id" });
 
 Replaces the donor's free-text notes. `id` is the donor's stored ID. Returns
 `404 donor_not_found` naming `id` if no such donor belongs to this institution.
+
+<b>Administrator accounts:</b> a program with an API key never changes an account that holds an
+administrator role. A donor who is also an administrator returns `400 validation_failed` naming
+`id`, and the notes are not saved; change them in AwardSpring instead.
 </dd>
 </dl>
 </dd>
@@ -949,9 +1024,22 @@ await client.Funds.ListAsync(new ListFundsRequest());
 <dl>
 <dd>
 
-Returns one page at a time, newest first. Without filters the list covers the whole
+Returns one page at a time. Without filters the list covers the whole
 institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
 return only gifts or only pledges, and `q` to search the subject and description.
+
+
+With no `sort`, gifts are listed in the order they were recorded, earliest recorded first.
+Sort by gift `date` with `sort`: `date_desc` lists the newest gift date first and
+`date_asc` the oldest first. Gifts that share a date keep the same order from one page
+to the next: the most recently recorded first for `date_desc`, the earliest recorded first
+for `date_asc`.
+
+`sort`, `donor_id`, `type` and `q` work together. Send the same ones on every
+page: a cursor sent with a different `sort`, `donor_id`, `type` or `q` returns
+`400 invalid_cursor`. An unknown `sort` returns `400 validation_failed` with
+`param` set to `sort`.
+
 
 Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
 </dd>
@@ -1051,6 +1139,136 @@ await client.Gifts.CreateAsync(new CreateGiftV1Request());
 </dl>
 </details>
 
+<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">GetAsync</a>(GetGiftsRequest { ... }) -> WithRawResponseTask&lt;GiftV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches one gift or pledge by its `id` from the gifts list, with the same fields and values
+the list returns for it. Returns `404 gift_not_found`, naming `id` in `param`, when
+no gift or pledge with that ID belongs to this institution, including when the ID belongs to
+another kind of logged activity such as an email or a meeting.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Gifts.GetAsync(new GetGiftsRequest { Id = "id" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `GetGiftsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">UpdateAsync</a>(UpdateGiftV1Request { ... }) -> WithRawResponseTask&lt;GiftV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Changes a gift's or pledge's amount, gift date, payment type, fund, campaign, subject and description,
+with the same rules the gift's edit window applies. Send only the fields to change: a field left out
+keeps its value. Send an empty string to clear `fund_id`, `campaign_id` or
+`description`; the other fields cannot be cleared.
+
+
+The donor, the record type (`type`), soft credits, `is_completed`,
+`assigned_to_user_id`, `gift_acknowledgement_sent` and any field not listed in the request
+body cannot be changed here. A request that sends one, or a value that is refused, returns
+`400 validation_failed`, and nothing in the request is saved. Each refused field is named in
+`details`, and in `param` when only one field is refused; a refusal from the gift's own save rules
+(for example a zero amount, or a closed fund) names no field.
+On a gift given online, the amount, gift date and payment type cannot be changed; its other fields can.
+A pledge has no payment type, and `Online` cannot be chosen as a payment type.
+
+
+Returns the gift or pledge as `GET /api/v1/gifts/{id}` returns it after the change. Returns
+`404 gift_not_found`, naming `id` in `param`, when no gift or pledge with that ID belongs
+to this institution. Send `dry_run` to check the change and see the result without saving it,
+and an `Idempotency-Key` header so a retry returns the first answer.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Gifts.UpdateAsync(new UpdateGiftV1Request { Id = "id" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `UpdateGiftV1Request` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Payment Schedules
 <details><summary><code>client.PaymentSchedules.<a href="/src/AwardSpring.Net/PaymentSchedules/PaymentSchedulesClient.cs">ListAsync</a>(ListPaymentSchedulesRequest { ... }) -> WithRawResponseTask&lt;PaymentScheduleV1ListResponse&gt;</code></summary>
 <dl>
@@ -1068,10 +1286,11 @@ Returns the payment schedules belonging to the institution your API key is issue
 envelope (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`,
 `data`). Page forward by passing the returned `next_cursor` as `starting_after`;
 the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
-Results are ordered by payment-schedule id ascending; sort by `payment_date` to get the
-order `payment_schedule_ids` expects. Filter with `?award_cycle_id=` to list only the
-schedules configured on that award cycle; an award cycle the institution does not have returns
-`404 award_cycle_not_found`.
+Each schedule's `id` is its stored ID (9 characters, capital letters and numbers): pass it
+exactly as returned in a scholarship's `payment_schedule_ids`. Results come in the order the
+schedules were created; sort by `payment_date` to get the order `payment_schedule_ids`
+expects. Filter with `?award_cycle_id=` to list only the schedules configured on that award
+cycle; an award cycle the institution does not have returns `404 award_cycle_not_found`.
 
 Assistant capability: `springiq_list_payment_schedules`.
 </dd>
@@ -1299,6 +1518,352 @@ await client.People.ListAsync(new ListPeopleRequest());
 </dl>
 </details>
 
+## Review Groups
+<details><summary><code>client.ReviewGroups.<a href="/src/AwardSpring.Net/ReviewGroups/ReviewGroupsClient.cs">ListAsync</a>(ListReviewGroupsRequest { ... }) -> WithRawResponseTask&lt;ReviewGroupV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the review groups of one award cycle, in the standard list envelope. `award_cycle_id` is
+required and is the award cycle's stored ID. Each group shows its stored ID, its name and its award cycle.
+An award cycle the institution does not have returns `404 award_cycle_not_found`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.ReviewGroups.ListAsync(
+    new ListReviewGroupsRequest { AwardCycleId = "award_cycle_id" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListReviewGroupsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Reviewer Assignments
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListAsync</a>(ListReviewerAssignmentsRequest { ... }) -> WithRawResponseTask&lt;ReviewerAssignmentV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one row per pair, as the Reviewer Assignment tab shows them, in the standard list envelope. Each row
+has the group's name and award cycle, the panel number on a group with two panels, and the reviewer and the
+applicant with name, email and stored ID. Rows are ordered by panel, then reviewer, then applicant.
+
+
+Name the group by `review_group_id`, its stored ID, or by `review_group_name`, optionally with
+`award_cycle_id`; leaving both out returns `400 validation_failed`. A group that does not exist at
+your institution, including one from another institution, returns `404 review_group_not_found`, and so
+does a name that fits no group. A name that fits more than one group returns `400 validation_failed`
+naming each. Leave `panel` out to list every panel; send `panel` to list one. A panel the group
+does not have returns `404 review_group_panel_not_found`. Send the same filters on every page: they are
+recorded in the cursor, and a page request whose filters do not match the cursor's is refused.
+
+
+Assistant capability: `springiq_list_reviewer_assignments`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.ReviewerAssignments.ListAsync(new ListReviewerAssignmentsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListReviewerAssignmentsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ChangeAsync</a>(ChangeReviewerAssignmentsV1Request { ... }) -> WithRawResponseTask&lt;ChangeReviewerAssignmentsV1Result&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Changes the pairs on one panel of a review group, with the same rules as the Reviewer Assignment tab.
+`review_group_id` in the body is required and is the review group's stored ID. Name each person by
+email or stored ID. Set `mode` to `add`, `remove` or `replace`; `replace` makes the
+panel hold exactly the pairs you send, removing the others.
+
+<b>Checks on every row.</b> The reviewer must already be a reviewer in the group. The applicant must have
+applied to a scholarship in the group, and on panel 2 must have been moved up to it. A reviewer is never
+given their own application. A pair listed twice, or a person who matches no active account or more than
+one, is turned down. A `replace` that would remove a pair whose review is started or finished turns
+that pair down unless `allow_removing_started_reviews` is `true`; removing a pair also removes
+that reviewer's scores for it, as Unassign does on the tab. Only a pair the tab shows is already in place
+or there to remove: adding a pair the tab does not show is turned down, and removing one leaves it as it
+is and counts it as `unchanged`.
+
+<b>All or nothing.</b> If any row is turned down, nothing changes and the answer is
+`400 assignment_rows_rejected`, whose `details` list every row with its reason. Rows that pass
+show `not_applied`. With `apply_good_rows_only` set to `true`, the rows that pass are
+applied and each turned-down row is listed in the `200`. A `replace` is the exception: one row
+whose reviewer or applicant matches no active account, or more than one, refuses the whole request with
+`400 assignment_rows_rejected` even with `apply_good_rows_only`, because that row could name a
+pair the panel holds and a `replace` removes every pair it does not list.
+
+<b>Large requests.</b> A request with more than 500 rows, or more than 500 pairs to change, is accepted at
+once with `202` and a `reviewer_assignment_job`, which names the review group and its award
+cycle as every answer does. Read `status_url` to follow it. Under
+all-or-nothing, a pair that becomes invalid while the job runs stops the job: batches already written
+stay written, and the job says so. At most 20,000 rows are accepted in one request, and a request may
+cover at most 20,000 pairs counting the pairs a `replace` removes because the request leaves them out;
+a larger one is refused with `400 validation_failed`.
+
+<b>The panel's assignment choice is never changed.</b> Every answer shows it as `assignment_choice`.
+When it is `all` or `random`, the answer carries a `warning`: applying that choice again in
+AwardSpring would replace the pairs you loaded.
+
+
+Each pair added is recorded as added by your API key. Send `dry_run` to check the request without
+changing anything, and an `Idempotency-Key` header so a retry returns the original answer; for a
+background job, the same job. Sending the same request again also ends in the same pairs.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.ReviewerAssignments.ChangeAsync(new ChangeReviewerAssignmentsV1Request());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ChangeReviewerAssignmentsV1Request` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">GetJobAsync</a>(GetJobReviewerAssignmentsRequest { ... }) -> WithRawResponseTask&lt;ReviewerAssignmentJobV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Shows how a background request is going: `status`, how many of its rows are done, and the counts so
+far. Like every answer about pairs, it names the review group and its award cycle by stored ID and name.
+The job carries totals only; read `rows_url` for each row's result. `completed` means every
+row was applied. A job that stopped early, or has any turned-down or failed row, including rows turned down
+when the request was accepted, is `partially_completed` and says why in `notices`. A job that
+applied nothing because it could not run, or because every row it reached was turned down or failed, is
+`failed`. A job code that names no job at your institution, including another institution's, returns
+`404 assignment_job_not_found`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.ReviewerAssignments.GetJobAsync(
+    new GetJobReviewerAssignmentsRequest { JobId = "job_id" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `GetJobReviewerAssignmentsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListJobRowsAsync</a>(ListJobRowsReviewerAssignmentsRequest { ... }) -> WithRawResponseTask&lt;ReviewerAssignmentJobRowV1ListResponse&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a background request's rows in request order, in the standard list envelope, each with what has
+happened to it so far: `waiting` until the job reaches it, then `applied`, `rejected` or
+`failed` with a `message` saying why. A row an all-or-nothing job never reached, because a pair
+failed its final check, stays `waiting`. When a job stops for any other reason, such as the API key
+losing its write access or the job being unable to finish, a row it did not change is `rejected`
+with a `message` saying why, and a row whose pair already stands as asked is `applied`. Pairs a
+`replace` removes because the request leaves them out come after the
+request's own rows and have no `index`.
+
+`job_id` is required and is the job's code from its `status_url`. A code that names no job at your
+institution, including another institution's, returns `404 assignment_job_not_found`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.ReviewerAssignments.ListJobRowsAsync(new ListJobRowsReviewerAssignmentsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListJobRowsReviewerAssignmentsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Reviewers
 <details><summary><code>client.Reviewers.<a href="/src/AwardSpring.Net/Reviewers/ReviewersClient.cs">CreateAsync</a>(CreateReviewerV1Request { ... }) -> WithRawResponseTask&lt;ReviewerV1&gt;</code></summary>
 <dl>
@@ -1507,6 +2072,141 @@ await client.Scholarships.CreateAsync(new CreateScholarshipV1Request());
 <dd>
 
 **request:** `CreateScholarshipV1Request` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">GetAsync</a>(GetScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Scholarships.GetAsync(new GetScholarshipsRequest { ScholarshipId = "scholarshipId" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `GetScholarshipsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">UpdateAsync</a>(UpdateScholarshipV1Request { ... }) -> WithRawResponseTask&lt;ScholarshipV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Changes a scholarship's name, application open and close dates, department, fund, donors, description,
+award notification wording, custom field values and qualifications (`add_qualifications` and
+`remove_qualifications`), and returns the updated scholarship in the same shape as getting it. Only the
+fields in the body change: a field left out, or sent as `null`, stays as it is, and an empty string
+clears a field only where the scholarship's Details tab lets it be cleared (the department, the fund and a
+custom field's value).
+
+
+The same rules apply as when an administrator saves the scholarship's Details tab, so anything refused there
+is refused here. Every field is checked before anything is saved, and the changes are saved together or not
+at all: a request with one refused field saves nothing, and the error names each refused field in
+`details`. A field this call does not change (for example `total_amount`) is refused the same way.
+
+
+A date sent without a time is that calendar day in the institution's time zone, and the scholarship keeps
+the time of day it opens or closes at now. A scholarship that starts taking applications again because of
+the change has its student matching and auto-apply run shortly after the save, as on the Details tab.
+
+`remove_qualifications` and `add_qualifications` name groups by their `group_number` in the
+scholarship's `qualification_groups` as last read, and the rules are saved by the Qualifications tab's own
+save, so its checks apply. Qualifications change only while the scholarship is taking applications, and the
+request is refused if either its stored close date has passed or the `application_end_date` it sends is
+in the past: reopening a closed scholarship and changing its qualifications in one request is refused, so
+reopen it first and change the qualifications in a second call. Students are re-checked against
+changed qualifications shortly after the save. A question behind a qualification always carries its stored
+ID; a question found without one is a server error (500).
+
+
+A scholarship ID the institution does not have, or that is malformed, returns `404 scholarship_not_found`
+naming `id`. The call needs an API key with write permission.
+
+
+Set `dry_run=true` (query param or `Dry-Run: true` header) to check the changes and see the
+scholarship as it would be, without saving anything.
+
+<b>Idempotency:</b> the request supports an optional `Idempotency-Key` header (any printable-ASCII
+string, 1–255 chars). The same key plus the same request body within 24 hours returns the original response
+without changing the scholarship again. The same key with a different body returns
+`422 idempotency_key_request_mismatch`; a concurrent retry while the first call is still executing
+returns `409 idempotency_key_in_flight`. Only 2xx responses are cached.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Scholarships.UpdateAsync(
+    new UpdateScholarshipV1Request { ScholarshipId = "scholarshipId" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `UpdateScholarshipV1Request` 
     
 </dd>
 </dl>
@@ -1882,6 +2582,89 @@ await client.Students.GetAsync(new GetStudentsRequest { Id = "id" });
 <dd>
 
 **request:** `GetStudentsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Students.<a href="/src/AwardSpring.Net/Students/StudentsClient.cs">UpdateAsync</a>(UpdateStudentV1Request { ... }) -> WithRawResponseTask&lt;StudentV1&gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Changes a student's `first_name`, `last_name`, `email`, `student_id` and `phone`,
+with the same checks as changing them on the student's account in the AwardSpring admin interface. The
+student is named by their `id` from the students list. The change is recorded under your API key.
+
+<b>Only what you send changes:</b> a field left out of the body, or sent as `null`, stays as it is.
+An empty `phone` or `student_id` clears it. A name or email cannot be cleared: an empty one returns
+`400 validation_failed` naming the field. Any other field in the body, such as `gpa`, returns
+`400 validation_failed` naming it, and nothing is saved.
+
+<b>What is refused:</b> a `student_id` already on another account at the institution, a value longer
+than its limit, or a malformed email returns `400 validation_failed` naming the field. An email any
+other account at the institution has, ignoring upper and lower case and including an archived account,
+returns `400 email_already_exists` naming `email`. Changing the email changes how the student
+signs in, and no email is sent to them about it. A refused request saves nothing.
+
+<b>Administrator accounts:</b> a program with an API key never changes an account that holds an
+administrator role. A student who is also an administrator returns `400 validation_failed` naming
+`id`; change them in AwardSpring instead.
+
+
+An `id` that names no student at the institution, including a donor's or reviewer's `id`,
+returns `404 student_not_found`, naming `id` in `param`. Send `dry_run` to run every
+check without saving: the response shows the student as the change would leave them. The student resource
+has no phone, so a phone change does not appear in the response.
+
+<b>Idempotency:</b> the request supports an optional `Idempotency-Key` header (any
+printable-ASCII string, 1–255 chars — UUIDs work well). When supplied, the same key plus the same
+request body within 24 hours returns the original response verbatim without changing the student again.
+The same key with a different body returns `422 idempotency_key_request_mismatch`; a concurrent retry
+while the first call is still executing returns `409 idempotency_key_in_flight`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Students.UpdateAsync(new UpdateStudentV1Request { Id = "id" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `UpdateStudentV1Request` 
     
 </dd>
 </dl>

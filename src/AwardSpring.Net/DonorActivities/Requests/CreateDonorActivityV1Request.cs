@@ -80,6 +80,13 @@ public record CreateDonorActivityV1Request
     [JsonPropertyName("is_completed")]
     public bool? IsCompleted { get; set; }
 
+    /// <summary>
+    /// Optional place for the meeting or call: a room, an address or a call link, up to 500 characters after
+    /// surrounding spaces are removed. Empty or only spaces means no place. Example: `"Alumni House, Room 204"`.
+    /// </summary>
+    [JsonPropertyName("place")]
+    public string? Place { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

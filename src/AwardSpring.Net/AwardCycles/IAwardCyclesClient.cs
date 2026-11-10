@@ -31,4 +31,23 @@ public partial interface IAwardCyclesClient
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// Returns one available-dollars summary (`object: "available_dollars_summary"`): the budget, awarded and remaining amounts of
+    /// every active scholarship in the award cycle added together, and how many of those scholarships are
+    /// over-awarded. The totals add up the same scholarships and amounts that
+    /// `GET /api/v1/scholarships/available-dollars` lists for the same cycle, so use this endpoint for a
+    /// cycle-wide total instead of paging through that list. An over-awarded scholarship (one that has awarded
+    /// more than its budget) is included and counts against `total_amount_remaining`. A cycle with no
+    /// active scholarships returns zeros, not an error. An award cycle ID the institution does not have returns
+    /// `404 award_cycle_not_found` naming `awardCycleId`; to find the cycle running now, call
+    /// `GET /api/v1/award-cycles/current`.
+    ///
+    /// Assistant capability: `springiq_get_available_dollars_summary`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
+    WithRawResponseTask<AvailableDollarsSummaryV1> GetAvailableDollarsSummaryAsync(
+        GetAvailableDollarsSummaryAwardCyclesRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    );
 }

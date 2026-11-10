@@ -30,6 +30,22 @@ public record DonorActivityV1 : IJsonOnDeserialized
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
+    /// <summary>
+    /// The stored ID of the donor the activity is with: the same value `donor_id` takes when an
+    /// activity is created, and the `id` the donor has on the donor list.
+    /// </summary>
+    [JsonPropertyName("donor_id")]
+    public string? DonorId { get; set; }
+
+    /// <summary>
+    /// The donor's name as the donor list shows it: an organization's name for an organization,
+    /// otherwise the donor's first and last name. Shown for an archived donor too. Null when the
+    /// request is made as a signed-in user whose Donors permission is No access, or when the donor's
+    /// record has no name.
+    /// </summary>
+    [JsonPropertyName("donor_name")]
+    public string? DonorName { get; set; }
+
     [JsonPropertyName("source")]
     public DonorActivitySourceV1? Source { get; set; }
 
@@ -56,6 +72,14 @@ public record DonorActivityV1 : IJsonOnDeserialized
     /// </summary>
     [JsonPropertyName("date")]
     public int? Date { get; set; }
+
+    /// <summary>
+    /// Where the meeting or call takes place: a room, an address or a call link (logged activities only).
+    /// Null when no place was given, which includes every activity logged on the website; null for
+    /// emails, text messages, awards and applications.
+    /// </summary>
+    [JsonPropertyName("place")]
+    public string? Place { get; set; }
 
     /// <summary>
     /// Monetary amount (logged monetary activities and awards); null otherwise.

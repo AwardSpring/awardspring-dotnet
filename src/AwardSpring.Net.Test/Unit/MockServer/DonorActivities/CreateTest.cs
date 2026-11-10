@@ -23,6 +23,7 @@ public class CreateTest : BaseMockServerTest
               "subject": "subject",
               "description": "description",
               "date": 1,
+              "place": "place",
               "amount": 1.1,
               "fund_id": "fund_id",
               "campaign_id": "campaign_id",

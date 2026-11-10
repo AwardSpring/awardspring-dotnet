@@ -21,7 +21,7 @@ public class ListTest : BaseMockServerTest
               "total_count": 1,
               "data": [
                 {
-                  "id": 1,
+                  "id": "id",
                   "name": "name",
                   "payment_date": 1,
                   "award_cycle_ids": [

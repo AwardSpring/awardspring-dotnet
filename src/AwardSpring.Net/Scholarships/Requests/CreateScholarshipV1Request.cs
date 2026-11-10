@@ -99,13 +99,13 @@ public record CreateScholarshipV1Request
 
     /// <summary>
     /// The award cycle's payment schedules used for the second and later payments, one per payment after
-    /// the first, in date order. Required when `payments_per_award` is 2 or more, and must be left out
-    /// otherwise. List them with `GET /api/v1/payment-schedules?award_cycle_id=`; each id must be one of
-    /// the schedules configured on the scholarship's award cycle, and any other id is rejected.
-    /// Example: `[12]`.
+    /// the first, in date order, named by their stored IDs (9 characters, capital letters and numbers).
+    /// Required when `payments_per_award` is 2 or more, and must be left out otherwise. List them with
+    /// `GET /api/v1/payment-schedules?award_cycle_id=`; each ID must be one of the schedules configured on
+    /// the scholarship's award cycle, and any other ID is rejected. Example: `["7HN4KX2RB"]`.
     /// </summary>
     [JsonPropertyName("payment_schedule_ids")]
-    public IEnumerable<int>? PaymentScheduleIds { get; set; }
+    public IEnumerable<string>? PaymentScheduleIds { get; set; }
 
     /// <summary>
     /// Optional stored ID of the department the scholarship is owned by. Used for Department Admin

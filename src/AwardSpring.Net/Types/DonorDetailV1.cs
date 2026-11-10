@@ -23,6 +23,21 @@ public record DonorDetailV1 : IJsonOnDeserialized
     public DonorQuickStatsV1? QuickStats { get; set; }
 
     /// <summary>
+    /// The names of the tags on this donor, in the order the institution lists its tags. Empty when the donor has
+    /// none.
+    /// </summary>
+    [JsonPropertyName("tags")]
+    public IEnumerable<string>? Tags { get; set; }
+
+    /// <summary>
+    /// The institution's donor custom fields that apply to this kind of donor (individual or organization), in the
+    /// order the institution lists them, each with this donor's answer. A field the donor has not answered is
+    /// included with no answer.
+    /// </summary>
+    [JsonPropertyName("custom_fields")]
+    public IEnumerable<DonorCustomFieldV1>? CustomFields { get; set; }
+
+    /// <summary>
     /// The donor's stored ID: 9 characters, sent exactly as stored. A dry-run create returns
     /// `null`, because no donor was saved.
     /// </summary>

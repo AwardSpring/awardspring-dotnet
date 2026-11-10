@@ -25,6 +25,14 @@ public record ListGiftsRequest
     public string? Q { get; set; }
 
     /// <summary>
+    /// The order to list gifts in (`?sort=`): `date_desc` for the newest gift date first, or
+    /// `date_asc` for the oldest gift date first. Leave it out for the order the gifts were
+    /// recorded in. Any other value returns `400 validation_failed`.
+    /// </summary>
+    [JsonIgnore]
+    public ListGiftsRequestSort? Sort { get; set; }
+
+    /// <summary>
     /// Page size. Defaults to 25. Values outside 1–100 are clamped rather than rejected.
     /// </summary>
     [JsonIgnore]

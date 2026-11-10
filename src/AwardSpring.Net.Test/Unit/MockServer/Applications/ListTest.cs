@@ -28,7 +28,8 @@ public class ListTest : BaseMockServerTest
                   "award_cycle_id": "award_cycle_id",
                   "award_cycle_name": "award_cycle_name",
                   "status": "status",
-                  "applied_date": 1
+                  "applied_date": 1,
+                  "entry_outcome": "entry_outcome"
                 }
               ]
             }

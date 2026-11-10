@@ -11,6 +11,10 @@ public record SoftCreditV1 : IJsonOnDeserialized
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
 
+    /// <summary>
+    /// The name recorded for the credit, or `null` when none was recorded, as for a credit that names a
+    /// person through `user_id`.
+    /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 

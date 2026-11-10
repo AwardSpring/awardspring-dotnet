@@ -22,11 +22,14 @@ public class ListTest : BaseMockServerTest
               "data": [
                 {
                   "id": "id",
+                  "donor_id": "donor_id",
+                  "donor_name": "donor_name",
                   "source": "Logged",
                   "activity_type": "activity_type",
                   "subject": "subject",
                   "description": "description",
                   "date": 1,
+                  "place": "place",
                   "amount": 1.1,
                   "fund_id": "fund_id",
                   "is_completed": true,

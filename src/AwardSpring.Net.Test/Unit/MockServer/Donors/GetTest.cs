@@ -23,6 +23,22 @@ public class GetTest : BaseMockServerTest
                 "last_gift_date": 1,
                 "include_soft_credits": true
               },
+              "tags": [
+                "tags"
+              ],
+              "custom_fields": [
+                {
+                  "value": "value",
+                  "selected": [
+                    "selected"
+                  ],
+                  "name": "name",
+                  "kind": "text",
+                  "choices": [
+                    "choices"
+                  ]
+                }
+              ],
               "id": "id",
               "first_name": "first_name",
               "last_name": "last_name",

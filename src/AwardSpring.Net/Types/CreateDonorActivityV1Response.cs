@@ -58,6 +58,13 @@ public record CreateDonorActivityV1Response : IJsonOnDeserialized
     public int? Date { get; set; }
 
     /// <summary>
+    /// Echo of the saved place for the meeting or call, with surrounding spaces removed, or `null` when
+    /// no place was given.
+    /// </summary>
+    [JsonPropertyName("place")]
+    public string? Place { get; set; }
+
+    /// <summary>
     /// Pledge amount, or `null` for non-monetary activity types.
     /// </summary>
     [JsonPropertyName("amount")]
