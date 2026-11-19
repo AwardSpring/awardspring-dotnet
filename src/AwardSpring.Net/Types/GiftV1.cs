@@ -89,7 +89,9 @@ public record GiftV1 : IJsonOnDeserialized
     public bool? GiftAcknowledgementSent { get; set; }
 
     /// <summary>
-    /// The date of the gift or pledge, in the institution's local time zone (UTC epoch seconds on the wire).
+    /// The date of the gift or pledge, as the institution's own wall-clock time, sent as epoch seconds.
+    /// The number is not a true UTC moment: it counts the school's clock as if the school were on UTC, so a gift made
+    /// at 10:00 AM school time arrives as 10:00 UTC. Read it as UTC and show it as is; do not convert it to the viewer's time zone.
     /// </summary>
     [JsonPropertyName("date")]
     public int? Date { get; set; }
@@ -100,6 +102,29 @@ public record GiftV1 : IJsonOnDeserialized
     /// </summary>
     [JsonPropertyName("soft_credits")]
     public IEnumerable<SoftCreditV1>? SoftCredits { get; set; }
+
+    /// <summary>
+    /// When anything stored on the gift or pledge that this resource returns last changed, in UTC epoch
+    /// seconds. Logging it counts as a change. Null only on a dry-run create, because nothing was saved.
+    /// Use it with the gifts list's `changed_since` to pick up only the gifts that changed.
+    /// </summary>
+    [JsonPropertyName("last_changed_at")]
+    public int? LastChangedAt { get; set; }
+
+    /// <summary>
+    /// Present, and `true`, only on a gift or pledge that was removed. Removed gifts appear only in a
+    /// gifts list requested with `changed_since`, and carry only `object`, `id`,
+    /// `deleted` and `removed_at`. Otherwise the key is omitted.
+    /// </summary>
+    [JsonPropertyName("deleted")]
+    public bool? Deleted { get; set; }
+
+    /// <summary>
+    /// On a removed gift or pledge only: when it was removed, in UTC epoch seconds. Otherwise the key is
+    /// omitted.
+    /// </summary>
+    [JsonPropertyName("removed_at")]
+    public int? RemovedAt { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

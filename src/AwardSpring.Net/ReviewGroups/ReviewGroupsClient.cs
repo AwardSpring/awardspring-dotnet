@@ -12,7 +12,23 @@ public partial class ReviewGroupsClient : IReviewGroupsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ReviewGroupV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the review groups of one award cycle, in the standard list envelope. `award_cycle_id` is
+    /// required and is the award cycle's stored ID. Each group shows its stored ID, its name and its award cycle.
+    /// An award cycle the institution does not have returns `404 award_cycle_not_found`.
+    /// </summary>
+    private WithRawResponseTask<ReviewGroupV1ListResponse> ListInternalAsync(
+        ListReviewGroupsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ReviewGroupV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<ReviewGroupV1ListResponse>> ListInternalAsyncCore(
         ListReviewGroupsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -178,14 +194,37 @@ public partial class ReviewGroupsClient : IReviewGroupsClient
     ///     new ListReviewGroupsRequest { AwardCycleId = "award_cycle_id" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ReviewGroupV1ListResponse> ListAsync(
+    public async Task<Pager<ReviewGroupV1>> ListAsync(
         ListReviewGroupsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ReviewGroupV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListReviewGroupsRequest,
+            RequestOptions?,
+            ReviewGroupV1ListResponse,
+            string?,
+            ReviewGroupV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

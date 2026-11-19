@@ -79,6 +79,23 @@ public record ApplicationV1 : IJsonOnDeserialized
     [JsonPropertyName("entry_outcome")]
     public string? EntryOutcome { get; set; }
 
+    /// <summary>
+    /// The student's answers to this award cycle's entry questions in the order the application asks them. Each one names the section Entry Questions. Null when the award cycle has no entry questions.
+    /// </summary>
+    [JsonPropertyName("entry_answers")]
+    public IEnumerable<ApplicationEntryAnswerV1>? EntryAnswers { get; set; }
+
+    /// <summary>
+    /// The options the student picked on the Major question of this award cycle's general application,
+    /// as the option text, in the order the question lists them. A choice the institution has since removed
+    /// from the question still shows, after the ones it lists. The question can take several answers,
+    /// so this may hold more than one. The options are written by the institution, so these are the
+    /// institution's own words and not a fixed list. Empty when this award cycle has no Major question
+    /// or the student has not answered it.
+    /// </summary>
+    [JsonPropertyName("majors")]
+    public IEnumerable<string>? Majors { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

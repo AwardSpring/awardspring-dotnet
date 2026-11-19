@@ -40,6 +40,19 @@ public record DonorQuickStatsV1 : IJsonOnDeserialized
     [JsonPropertyName("include_soft_credits")]
     public bool? IncludeSoftCredits { get; set; }
 
+    /// <summary>
+    /// What the gifts other donors made that credit this donor add up to, less anything refunded. Separate from
+    /// `lifetime_total`, which takes in soft credits only when `include_soft_credits` is on.
+    /// </summary>
+    [JsonPropertyName("soft_credit_total")]
+    public double? SoftCreditTotal { get; set; }
+
+    /// <summary>
+    /// The number of gifts other donors made that credit this donor, refunded ones included.
+    /// </summary>
+    [JsonPropertyName("soft_credit_count")]
+    public int? SoftCreditCount { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

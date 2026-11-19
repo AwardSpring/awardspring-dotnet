@@ -12,7 +12,28 @@ public partial class ApplicationsClient : IApplicationsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ApplicationV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns one page at a time. Each row names the scholarship and award cycle it belongs to,
+    /// and carries a `status` of `applied`, `awarded`, or `denied`. Without
+    /// filters the list covers the whole institution; narrow it with `user_id` (a
+    /// student's `id` from the Students endpoints) to scope to a single student. Returns
+    /// `404 student_not_found`, naming `user_id` in `param`, when the `user_id` is not
+    /// a student at this institution.
+    ///
+    /// Assistant capability: `springiq_list_student_applications`. Required permission: Users (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<ApplicationV1ListResponse> ListInternalAsync(
+        ListApplicationsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ApplicationV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<ApplicationV1ListResponse>> ListInternalAsyncCore(
         ListApplicationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -169,14 +190,37 @@ public partial class ApplicationsClient : IApplicationsClient
     /// <example><code>
     /// await client.Applications.ListAsync(new ListApplicationsRequest());
     /// </code></example>
-    public WithRawResponseTask<ApplicationV1ListResponse> ListAsync(
+    public async Task<Pager<ApplicationV1>> ListAsync(
         ListApplicationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ApplicationV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListApplicationsRequest,
+            RequestOptions?,
+            ApplicationV1ListResponse,
+            string?,
+            ApplicationV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

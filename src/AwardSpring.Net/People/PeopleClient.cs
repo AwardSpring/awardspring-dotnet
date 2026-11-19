@@ -320,7 +320,32 @@ public partial class PeopleClient : IPeopleClient
         }
     }
 
-    private async Task<WithRawResponse<PersonV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the people the institution's Users list shows, for the institution your API key is issued
+    /// for, in the standard list envelope (`object: "list"`, `has_more`, `next_cursor`,
+    /// `previous_cursor`, `data`). Each person carries their roles, the departments an
+    /// administrator is limited to, whether the account is archived, and an administrator's permissions.
+    /// Page forward by passing the returned `next_cursor` as `starting_after`. `limit`
+    /// defaults to 25 and is capped at 100. Results are ordered by id ascending.
+    ///
+    ///
+    /// Filter with `?role=` (`administrators`, `reviewers`, `students` or
+    /// `donors`), `?q=` (part of a name, the start of an email address or student number, or an
+    /// exact id) and `?status=` (`all`, `active` or `archived`; archived accounts are
+    /// listed by default, as on the Users list).
+    /// </summary>
+    private WithRawResponseTask<PersonV1ListResponse> ListInternalAsync(
+        ListPeopleRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<PersonV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<PersonV1ListResponse>> ListInternalAsyncCore(
         ListPeopleRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -527,14 +552,37 @@ public partial class PeopleClient : IPeopleClient
     /// <example><code>
     /// await client.People.ListAsync(new ListPeopleRequest());
     /// </code></example>
-    public WithRawResponseTask<PersonV1ListResponse> ListAsync(
+    public async Task<Pager<PersonV1>> ListAsync(
         ListPeopleRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<PersonV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListPeopleRequest,
+            RequestOptions?,
+            PersonV1ListResponse,
+            string?,
+            PersonV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

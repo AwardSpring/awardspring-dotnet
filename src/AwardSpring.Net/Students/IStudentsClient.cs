@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IStudentsClient
@@ -11,7 +13,7 @@ public partial interface IStudentsClient
     ///
     /// Assistant capability: `springiq_list_students`. Required permission: Users (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<StudentV1ListResponse> ListAsync(
+    Task<Pager<StudentV1>> ListAsync(
         ListStudentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

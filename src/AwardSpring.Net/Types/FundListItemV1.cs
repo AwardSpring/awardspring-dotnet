@@ -31,7 +31,8 @@ public record FundListItemV1 : IJsonOnDeserialized
     /// <summary>
     /// The money left in the fund, in dollars, rounded to two decimal places: every deposit and gift into it, less
     /// every disbursement and decided award paid from it, over the fund's whole history.
-    /// `0` when the fund has had no money in or out. Example: `1500.25`.
+    /// `0` when the fund has had no money in or out. Example: `1500.25`. Empty for a signed-in person
+    /// without the Funds permission.
     /// </summary>
     [JsonPropertyName("remaining_balance")]
     public double? RemainingBalance { get; set; }

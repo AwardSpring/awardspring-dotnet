@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IGiftsClient
@@ -5,7 +7,9 @@ public partial interface IGiftsClient
     /// <summary>
     /// Returns one page at a time. Without filters the list covers the whole
     /// institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
-    /// return only gifts or only pledges, and `q` to search the subject and description.
+    /// return only gifts or only pledges, and `q` to search the subject and description, the donor's
+    /// name, organization or email, and the fund's name. `donor_id` takes any donor
+    /// `GET /api/v1/donors/{id}` returns, an archived one included.
     ///
     ///
     /// With no `sort`, gifts are listed in the order they were recorded, earliest recorded first.
@@ -20,9 +24,29 @@ public partial interface IGiftsClient
     /// `param` set to `sort`.
     ///
     ///
+    /// To keep a copy in sync, send `changed_since`, a time in UTC epoch seconds. The list then holds
+    /// only the gifts and pledges that changed at or after that time, in the order they changed, oldest
+    /// change first, by `last_changed_at`. A gift or pledge removed since that time is listed too, at
+    /// the time it was removed, with only `object`, `id`, `deleted: true` and
+    /// `removed_at`. A list narrowed by `donor_id` lists that donor's removed gifts and pledges. A
+    /// removed gift keeps no type, so a list narrowed by `type` leaves removals out: keep one sync
+    /// without `type` to learn of them. A gift or pledge that moved to another donor, or switched between
+    /// gift and pledge, is listed the same way in a list narrowed by the `donor_id` or `type` it
+    /// left, at the time it changed, unless it matches that list again by then; it stays live in every other
+    /// list, and a list with neither filter never lists it removed. Every page carries `complete_up_to`, the same on every
+    /// page of one walk; start the next sync from it. A gift may appear in two syncs in a row, but none is
+    /// missed.
+    ///
+    /// `changed_since` works with `donor_id` and `type`. With `sort` or `q` it
+    /// returns `400 validation_failed` with `param` naming the parameter it cannot be combined
+    /// with. A time in the future, or anything but a whole number of seconds, returns
+    /// `400 validation_failed` with `param` set to `changed_since`. A cursor sent with a
+    /// different `changed_since` returns `400 invalid_cursor`.
+    ///
+    ///
     /// Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<GiftV1ListResponse> ListAsync(
+    Task<Pager<GiftV1>> ListAsync(
         ListGiftsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

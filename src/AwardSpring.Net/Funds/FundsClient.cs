@@ -12,7 +12,27 @@ public partial class FundsClient : IFundsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<FundListItemV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the funds belonging to the institution your API key is issued for, in the standard list envelope
+    /// (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`,
+    /// `data`). Page forward by passing the returned `next_cursor` as
+    /// `starting_after`. Filter with `?q=` (case-insensitive substring match on the
+    /// fund name).
+    ///
+    /// Assistant capability: `springiq_list_funds`. Required permission: Funds (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<FundListItemV1ListResponse> ListInternalAsync(
+        ListFundsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<FundListItemV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<FundListItemV1ListResponse>> ListInternalAsyncCore(
         ListFundsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -168,14 +188,37 @@ public partial class FundsClient : IFundsClient
     /// <example><code>
     /// await client.Funds.ListAsync(new ListFundsRequest());
     /// </code></example>
-    public WithRawResponseTask<FundListItemV1ListResponse> ListAsync(
+    public async Task<Pager<FundListItemV1>> ListAsync(
         ListFundsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<FundListItemV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListFundsRequest,
+            RequestOptions?,
+            FundListItemV1ListResponse,
+            string?,
+            FundListItemV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IScholarshipsClient
@@ -12,7 +14,7 @@ public partial interface IScholarshipsClient
     ///
     /// Assistant capability: `springiq_list_scholarships`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<ScholarshipListItemV1ListResponse> ListAsync(
+    Task<Pager<ScholarshipListItemV1>> ListAsync(
         ListScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -110,7 +112,7 @@ public partial interface IScholarshipsClient
     /// <summary>
     /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsAsync(
+    Task<Pager<ScholarshipAvailableDollarsV1>> ListAvailableDollarsAsync(
         ListAvailableDollarsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -128,7 +130,7 @@ public partial interface IScholarshipsClient
     /// <summary>
     /// Assistant capability: `springiq_get_awarded_students`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsAsync(
+    Task<Pager<AwardedStudentV1>> ListAwardedStudentsAsync(
         ListAwardedStudentsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

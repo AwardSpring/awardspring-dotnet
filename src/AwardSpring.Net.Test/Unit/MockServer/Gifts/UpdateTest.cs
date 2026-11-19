@@ -35,7 +35,10 @@ public class UpdateTest : BaseMockServerTest
                   "name": "name",
                   "user_id": "user_id"
                 }
-              ]
+              ],
+              "last_changed_at": 1,
+              "deleted": true,
+              "removed_at": 1
             }
             """;
 

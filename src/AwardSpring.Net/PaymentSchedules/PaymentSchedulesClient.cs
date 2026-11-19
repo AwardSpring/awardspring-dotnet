@@ -12,7 +12,31 @@ public partial class PaymentSchedulesClient : IPaymentSchedulesClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<PaymentScheduleV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the payment schedules belonging to the institution your API key is issued for, in the list
+    /// envelope (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`,
+    /// `data`). Page forward by passing the returned `next_cursor` as `starting_after`;
+    /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
+    /// Each schedule's `id` is its stored ID (9 characters, capital letters and numbers): pass it
+    /// exactly as returned in a scholarship's `payment_schedule_ids`. Results come in the order the
+    /// schedules were created; sort by `payment_date` to get the order `payment_schedule_ids`
+    /// expects. Filter with `?award_cycle_id=` to list only the schedules configured on that award
+    /// cycle; an award cycle the institution does not have returns `404 award_cycle_not_found`.
+    ///
+    /// Assistant capability: `springiq_list_payment_schedules`.
+    /// </summary>
+    private WithRawResponseTask<PaymentScheduleV1ListResponse> ListInternalAsync(
+        ListPaymentSchedulesRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<PaymentScheduleV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<PaymentScheduleV1ListResponse>> ListInternalAsyncCore(
         ListPaymentSchedulesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -186,14 +210,37 @@ public partial class PaymentSchedulesClient : IPaymentSchedulesClient
     /// <example><code>
     /// await client.PaymentSchedules.ListAsync(new ListPaymentSchedulesRequest());
     /// </code></example>
-    public WithRawResponseTask<PaymentScheduleV1ListResponse> ListAsync(
+    public async Task<Pager<PaymentScheduleV1>> ListAsync(
         ListPaymentSchedulesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<PaymentScheduleV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListPaymentSchedulesRequest,
+            RequestOptions?,
+            PaymentScheduleV1ListResponse,
+            string?,
+            PaymentScheduleV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

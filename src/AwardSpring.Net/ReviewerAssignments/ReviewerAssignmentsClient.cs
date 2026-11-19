@@ -12,7 +12,35 @@ public partial class ReviewerAssignmentsClient : IReviewerAssignmentsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ReviewerAssignmentV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns one row per pair, as the Reviewer Assignment tab shows them, in the standard list envelope. Each row
+    /// has the group's name and award cycle, the panel number on a group with two panels, and the reviewer and the
+    /// applicant with name, email and stored ID. Rows are ordered by panel, then reviewer, then applicant.
+    ///
+    ///
+    /// Name the group by `review_group_id`, its stored ID, or by `review_group_name`, optionally with
+    /// `award_cycle_id`; leaving both out returns `400 validation_failed`. A group that does not exist at
+    /// your institution, including one from another institution, returns `404 review_group_not_found`, and so
+    /// does a name that fits no group. A name that fits more than one group returns `400 validation_failed`
+    /// naming each. Leave `panel` out to list every panel; send `panel` to list one. A panel the group
+    /// does not have returns `404 review_group_panel_not_found`. Send the same filters on every page: they are
+    /// recorded in the cursor, and a page request whose filters do not match the cursor's is refused.
+    ///
+    ///
+    /// Assistant capability: `springiq_list_reviewer_assignments`.
+    /// </summary>
+    private WithRawResponseTask<ReviewerAssignmentV1ListResponse> ListInternalAsync(
+        ListReviewerAssignmentsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ReviewerAssignmentV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<ReviewerAssignmentV1ListResponse>> ListInternalAsyncCore(
         ListReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -494,9 +522,33 @@ public partial class ReviewerAssignmentsClient : IReviewerAssignmentsClient
         }
     }
 
+    /// <summary>
+    /// Returns a background request's rows in request order, in the standard list envelope, each with what has
+    /// happened to it so far: `waiting` until the job reaches it, then `applied`, `rejected` or
+    /// `failed` with a `message` saying why. A row an all-or-nothing job never reached, because a pair
+    /// failed its final check, stays `waiting`. When a job stops for any other reason, such as the API key
+    /// losing its write access or the job being unable to finish, a row it did not change is `rejected`
+    /// with a `message` saying why, and a row whose pair already stands as asked is `applied`. Pairs a
+    /// `replace` removes because the request leaves them out come after the
+    /// request's own rows and have no `index`.
+    ///
+    /// `job_id` is required and is the job's code from its `status_url`. A code that names no job at your
+    /// institution, including another institution's, returns `404 assignment_job_not_found`.
+    /// </summary>
+    private WithRawResponseTask<ReviewerAssignmentJobRowV1ListResponse> ListJobRowsInternalAsync(
+        ListJobRowsReviewerAssignmentsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ReviewerAssignmentJobRowV1ListResponse>(
+            ListJobRowsInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
     private async Task<
         WithRawResponse<ReviewerAssignmentJobRowV1ListResponse>
-    > ListJobRowsAsyncCore(
+    > ListJobRowsInternalAsyncCore(
         ListJobRowsReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -674,15 +726,38 @@ public partial class ReviewerAssignmentsClient : IReviewerAssignmentsClient
     /// <example><code>
     /// await client.ReviewerAssignments.ListAsync(new ListReviewerAssignmentsRequest());
     /// </code></example>
-    public WithRawResponseTask<ReviewerAssignmentV1ListResponse> ListAsync(
+    public async Task<Pager<ReviewerAssignmentV1>> ListAsync(
         ListReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ReviewerAssignmentV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListReviewerAssignmentsRequest,
+            RequestOptions?,
+            ReviewerAssignmentV1ListResponse,
+            string?,
+            ReviewerAssignmentV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>
@@ -781,14 +856,38 @@ public partial class ReviewerAssignmentsClient : IReviewerAssignmentsClient
     /// <example><code>
     /// await client.ReviewerAssignments.ListJobRowsAsync(new ListJobRowsReviewerAssignmentsRequest());
     /// </code></example>
-    public WithRawResponseTask<ReviewerAssignmentJobRowV1ListResponse> ListJobRowsAsync(
+    public async Task<Pager<ReviewerAssignmentJobRowV1>> ListJobRowsAsync(
         ListJobRowsReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ReviewerAssignmentJobRowV1ListResponse>(
-            ListJobRowsAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListJobRowsReviewerAssignmentsRequest,
+            RequestOptions?,
+            ReviewerAssignmentJobRowV1ListResponse,
+            string?,
+            ReviewerAssignmentJobRowV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListJobRowsInternalAsync(request, options, cancellationToken)
+                        .WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

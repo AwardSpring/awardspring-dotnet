@@ -19,13 +19,13 @@ public record ListApplicationsRequest
     public int? Limit { get; set; }
 
     /// <summary>
-    /// Opaque cursor. Pass the `next_cursor` from the previous page to page forward. Mutually exclusive with `ending_before`; if both are supplied, `starting_after` wins.
+    /// Opaque cursor. Pass the `next_cursor` from the previous page to page forward. Send it or `ending_before`, never both: a request with both returns `400 validation_failed`.
     /// </summary>
     [JsonIgnore]
     public string? StartingAfter { get; set; }
 
     /// <summary>
-    /// Opaque cursor. Pass the `previous_cursor` from the current page to page backward.
+    /// Opaque cursor. Pass the `previous_cursor` from the current page to page backward. Send it or `starting_after`, never both: a request with both returns `400 validation_failed`.
     /// </summary>
     [JsonIgnore]
     public string? EndingBefore { get; set; }

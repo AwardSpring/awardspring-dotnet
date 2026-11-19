@@ -12,17 +12,71 @@ public partial class GiftsClient : IGiftsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<GiftV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns one page at a time. Without filters the list covers the whole
+    /// institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
+    /// return only gifts or only pledges, and `q` to search the subject and description, the donor's
+    /// name, organization or email, and the fund's name. `donor_id` takes any donor
+    /// `GET /api/v1/donors/{id}` returns, an archived one included.
+    ///
+    ///
+    /// With no `sort`, gifts are listed in the order they were recorded, earliest recorded first.
+    /// Sort by gift `date` with `sort`: `date_desc` lists the newest gift date first and
+    /// `date_asc` the oldest first. Gifts that share a date keep the same order from one page
+    /// to the next: the most recently recorded first for `date_desc`, the earliest recorded first
+    /// for `date_asc`.
+    ///
+    /// `sort`, `donor_id`, `type` and `q` work together. Send the same ones on every
+    /// page: a cursor sent with a different `sort`, `donor_id`, `type` or `q` returns
+    /// `400 invalid_cursor`. An unknown `sort` returns `400 validation_failed` with
+    /// `param` set to `sort`.
+    ///
+    ///
+    /// To keep a copy in sync, send `changed_since`, a time in UTC epoch seconds. The list then holds
+    /// only the gifts and pledges that changed at or after that time, in the order they changed, oldest
+    /// change first, by `last_changed_at`. A gift or pledge removed since that time is listed too, at
+    /// the time it was removed, with only `object`, `id`, `deleted: true` and
+    /// `removed_at`. A list narrowed by `donor_id` lists that donor's removed gifts and pledges. A
+    /// removed gift keeps no type, so a list narrowed by `type` leaves removals out: keep one sync
+    /// without `type` to learn of them. A gift or pledge that moved to another donor, or switched between
+    /// gift and pledge, is listed the same way in a list narrowed by the `donor_id` or `type` it
+    /// left, at the time it changed, unless it matches that list again by then; it stays live in every other
+    /// list, and a list with neither filter never lists it removed. Every page carries `complete_up_to`, the same on every
+    /// page of one walk; start the next sync from it. A gift may appear in two syncs in a row, but none is
+    /// missed.
+    ///
+    /// `changed_since` works with `donor_id` and `type`. With `sort` or `q` it
+    /// returns `400 validation_failed` with `param` naming the parameter it cannot be combined
+    /// with. A time in the future, or anything but a whole number of seconds, returns
+    /// `400 validation_failed` with `param` set to `changed_since`. A cursor sent with a
+    /// different `changed_since` returns `400 invalid_cursor`.
+    ///
+    ///
+    /// Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<GiftV1ListResponse> ListInternalAsync(
         ListGiftsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 8)
+        return new WithRawResponseTask<GiftV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<GiftV1ListResponse>> ListInternalAsyncCore(
+        ListGiftsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var _queryString = new AwardSpring.Net.Core.QueryStringBuilder.Builder(capacity: 9)
             .Add("donor_id", request.DonorId)
             .Add("type", request.Type)
             .Add("q", request.Q)
             .Add("sort", request.Sort)
+            .Add("changed_since", request.ChangedSince)
             .Add("limit", request.Limit)
             .Add("starting_after", request.StartingAfter)
             .Add("ending_before", request.EndingBefore)
@@ -649,7 +703,9 @@ public partial class GiftsClient : IGiftsClient
     /// <summary>
     /// Returns one page at a time. Without filters the list covers the whole
     /// institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
-    /// return only gifts or only pledges, and `q` to search the subject and description.
+    /// return only gifts or only pledges, and `q` to search the subject and description, the donor's
+    /// name, organization or email, and the fund's name. `donor_id` takes any donor
+    /// `GET /api/v1/donors/{id}` returns, an archived one included.
     ///
     ///
     /// With no `sort`, gifts are listed in the order they were recorded, earliest recorded first.
@@ -664,20 +720,63 @@ public partial class GiftsClient : IGiftsClient
     /// `param` set to `sort`.
     ///
     ///
+    /// To keep a copy in sync, send `changed_since`, a time in UTC epoch seconds. The list then holds
+    /// only the gifts and pledges that changed at or after that time, in the order they changed, oldest
+    /// change first, by `last_changed_at`. A gift or pledge removed since that time is listed too, at
+    /// the time it was removed, with only `object`, `id`, `deleted: true` and
+    /// `removed_at`. A list narrowed by `donor_id` lists that donor's removed gifts and pledges. A
+    /// removed gift keeps no type, so a list narrowed by `type` leaves removals out: keep one sync
+    /// without `type` to learn of them. A gift or pledge that moved to another donor, or switched between
+    /// gift and pledge, is listed the same way in a list narrowed by the `donor_id` or `type` it
+    /// left, at the time it changed, unless it matches that list again by then; it stays live in every other
+    /// list, and a list with neither filter never lists it removed. Every page carries `complete_up_to`, the same on every
+    /// page of one walk; start the next sync from it. A gift may appear in two syncs in a row, but none is
+    /// missed.
+    ///
+    /// `changed_since` works with `donor_id` and `type`. With `sort` or `q` it
+    /// returns `400 validation_failed` with `param` naming the parameter it cannot be combined
+    /// with. A time in the future, or anything but a whole number of seconds, returns
+    /// `400 validation_failed` with `param` set to `changed_since`. A cursor sent with a
+    /// different `changed_since` returns `400 invalid_cursor`.
+    ///
+    ///
     /// Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
     /// <example><code>
     /// await client.Gifts.ListAsync(new ListGiftsRequest());
     /// </code></example>
-    public WithRawResponseTask<GiftV1ListResponse> ListAsync(
+    public async Task<Pager<GiftV1>> ListAsync(
         ListGiftsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<GiftV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListGiftsRequest,
+            RequestOptions?,
+            GiftV1ListResponse,
+            string?,
+            GiftV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>

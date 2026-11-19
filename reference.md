@@ -1,6 +1,6 @@
 # Reference
 ## Applications
-<details><summary><code>client.Applications.<a href="/src/AwardSpring.Net/Applications/ApplicationsClient.cs">ListAsync</a>(ListApplicationsRequest { ... }) -> WithRawResponseTask&lt;ApplicationV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Applications.<a href="/src/AwardSpring.Net/Applications/ApplicationsClient.cs">ListAsync</a>(ListApplicationsRequest { ... }) -> Pager&lt;ApplicationV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -62,7 +62,7 @@ await client.Applications.ListAsync(new ListApplicationsRequest());
 </details>
 
 ## Award Cycles
-<details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">ListAsync</a>(ListAwardCyclesRequest { ... }) -> WithRawResponseTask&lt;AwardCycleV1ListResponse&gt;</code></summary>
+<details><summary><code>client.AwardCycles.<a href="/src/AwardSpring.Net/AwardCycles/AwardCyclesClient.cs">ListAsync</a>(ListAwardCyclesRequest { ... }) -> Pager&lt;AwardCycleV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -235,7 +235,7 @@ await client.AwardCycles.GetAvailableDollarsSummaryAsync(
 </details>
 
 ## Awards
-<details><summary><code>client.Awards.<a href="/src/AwardSpring.Net/Awards/AwardsClient.cs">ListAsync</a>(ListAwardsRequest { ... }) -> WithRawResponseTask&lt;AwardV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Awards.<a href="/src/AwardSpring.Net/Awards/AwardsClient.cs">ListAsync</a>(ListAwardsRequest { ... }) -> Pager&lt;AwardV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -296,7 +296,7 @@ await client.Awards.ListAsync(new ListAwardsRequest());
 </details>
 
 ## Departments
-<details><summary><code>client.Departments.<a href="/src/AwardSpring.Net/Departments/DepartmentsClient.cs">ListAsync</a>(ListDepartmentsRequest { ... }) -> WithRawResponseTask&lt;DepartmentV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Departments.<a href="/src/AwardSpring.Net/Departments/DepartmentsClient.cs">ListAsync</a>(ListDepartmentsRequest { ... }) -> Pager&lt;DepartmentV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -420,7 +420,7 @@ await client.Departments.CreateAsync(new CreateDepartmentV1Request());
 </details>
 
 ## Donor Activities
-<details><summary><code>client.DonorActivities.<a href="/src/AwardSpring.Net/DonorActivities/DonorActivitiesClient.cs">ListAsync</a>(ListDonorActivitiesRequest { ... }) -> WithRawResponseTask&lt;DonorActivityV1ListResponse&gt;</code></summary>
+<details><summary><code>client.DonorActivities.<a href="/src/AwardSpring.Net/DonorActivities/DonorActivitiesClient.cs">ListAsync</a>(ListDonorActivitiesRequest { ... }) -> Pager&lt;DonorActivityV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -492,7 +492,9 @@ email, a note, or a verbal pledge. Errors come back with a stable `code`, a read
 
 
 Supported activity types: `LoggedEmail`, `LoggedPhone`, `LoggedMeeting`, `LoggedNote`,
-`LoggedPledge`. Gifts are recorded through the Gifts endpoints instead.
+`LoggedPledge`. Gifts are recorded through the Gifts endpoints instead. A pledge for an archived donor,
+whether the account is archived or only its Donor role, returns `400 validation_failed`; restore the
+donor first. Other activity types are recorded for an archived donor.
 
 
 A typical use is working through a call list and logging each conversation as it ends, with the
@@ -608,7 +610,7 @@ await client.DonorActivities.GetAsync(
 </details>
 
 ## Donors
-<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">ListAsync</a>(ListDonorsRequest { ... }) -> WithRawResponseTask&lt;DonorListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Donors.<a href="/src/AwardSpring.Net/Donors/DonorsClient.cs">ListAsync</a>(ListDonorsRequest { ... }) -> Pager&lt;DonorListItemV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -628,8 +630,9 @@ Sort with `sort`. `name` lists donors A to Z, ignoring case: an organization by 
 organization name, and a person by last name, then first name. A person with no last name
 is listed by first name, and a donor with no name at all comes last. `last_contacted`
 lists the most recently contacted donors first, by `last_contacted_at`; donors who
-have never been contacted come last. Donors who tie are listed by `id`: lowest first
-for `name`, highest first for `last_contacted`.
+have never been contacted come last. `longest_since_contact` is the other way round: donors
+never contacted first, then the oldest contact. Donors who tie are listed by `id`: lowest
+first for `name` and `longest_since_contact`, highest first for `last_contacted`.
 
 
 Narrow the list with `level` to donors at one or more levels, for example
@@ -671,6 +674,28 @@ on every page: a cursor sent with a different `sort`, `level`, `giving_status`
 or `q` returns `400 invalid_cursor`. A search shorter than `2` characters, or an
 unknown `level`, `giving_status` or `sort`, returns `400 validation_failed`
 with `param` set to the parameter at fault.
+
+
+To keep a copy in sync, send `changed_since`, a time in UTC epoch seconds. The list then holds
+only the donors whose stored details changed at or after that time, in the order they changed,
+oldest change first, by `last_changed_at`. A new gift does not count as a change to its donor.
+Archiving or restoring a donor counts as a change: an archived donor stays in the list with
+`archived: true`, including one who is a donor only through an extra Donor role, and comes back
+with `archived: false` once restored. A donor removed since that time is listed too, at the time it was removed, with only
+`object`, `id`, `deleted: true` and `removed_at`. That includes a person who stops
+being a donor but keeps their account, for example when their Donor role is removed; their gifts are
+not removed with it. If that person becomes a donor again, the same `id` is listed again as a
+change, after its removal. A removed donor keeps no
+giving, so a list narrowed by `level` or `giving_status` leaves removals out: keep one
+sync with no other filter to learn of them. Every page carries `complete_up_to`, the same on
+every page of one walk; start the next sync from it. A donor may appear in two syncs in a row, but
+none is missed.
+
+`changed_since` works with `level` and `giving_status`. With `sort` or
+`q` it returns `400 validation_failed` with `param` naming the parameter it cannot
+be combined with. A time in the future, or anything but a whole number of seconds, returns
+`400 validation_failed` with `param` set to `changed_since`. A cursor sent with a
+different `changed_since` returns `400 invalid_cursor`.
 
 
 Assistant capability: `springiq_list_donors`. Required permission: Donors (applies when called on behalf of a signed-in person).
@@ -845,7 +870,8 @@ await client.Donors.GetAsync(new GetDonorsRequest { Id = "id" });
 <dd>
 
 Only the fields present in the request body change; anything omitted is left alone. Send
-`dry_run` to validate the request without saving it.
+`dry_run` to validate the request without saving it. `id` takes any donor
+`GET /api/v1/donors/{id}` returns, an archived one included; the donor stays archived.
 
 <b>Administrator accounts:</b> a program with an API key never changes an account that holds an
 administrator role. A donor who is also an administrator returns `400 validation_failed` naming
@@ -903,7 +929,8 @@ await client.Donors.UpdateAsync(new UpdateDonorV1Request { Id = "id" });
 <dl>
 <dd>
 
-Replaces the donor's free-text notes. `id` is the donor's stored ID. Returns
+Replaces the donor's free-text notes. `id` is the donor's stored ID, and takes any donor
+`GET /api/v1/donors/{id}` returns, an archived one included. Returns
 `404 donor_not_found` naming `id` if no such donor belongs to this institution.
 
 <b>Administrator accounts:</b> a program with an API key never changes an account that holds an
@@ -951,7 +978,7 @@ await client.Donors.UpdateNotesAsync(new UpdateDonorNotesV1Request { Id = "id" }
 </details>
 
 ## Funds
-<details><summary><code>client.Funds.<a href="/src/AwardSpring.Net/Funds/FundsClient.cs">ListAsync</a>(ListFundsRequest { ... }) -> WithRawResponseTask&lt;FundListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Funds.<a href="/src/AwardSpring.Net/Funds/FundsClient.cs">ListAsync</a>(ListFundsRequest { ... }) -> Pager&lt;FundListItemV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1012,7 +1039,7 @@ await client.Funds.ListAsync(new ListFundsRequest());
 </details>
 
 ## Gifts
-<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">ListAsync</a>(ListGiftsRequest { ... }) -> WithRawResponseTask&lt;GiftV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Gifts.<a href="/src/AwardSpring.Net/Gifts/GiftsClient.cs">ListAsync</a>(ListGiftsRequest { ... }) -> Pager&lt;GiftV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1026,7 +1053,9 @@ await client.Funds.ListAsync(new ListFundsRequest());
 
 Returns one page at a time. Without filters the list covers the whole
 institution. Narrow it with `donor_id` (a donor's stored ID) to scope to a single donor, `type` to
-return only gifts or only pledges, and `q` to search the subject and description.
+return only gifts or only pledges, and `q` to search the subject and description, the donor's
+name, organization or email, and the fund's name. `donor_id` takes any donor
+`GET /api/v1/donors/{id}` returns, an archived one included.
 
 
 With no `sort`, gifts are listed in the order they were recorded, earliest recorded first.
@@ -1039,6 +1068,26 @@ for `date_asc`.
 page: a cursor sent with a different `sort`, `donor_id`, `type` or `q` returns
 `400 invalid_cursor`. An unknown `sort` returns `400 validation_failed` with
 `param` set to `sort`.
+
+
+To keep a copy in sync, send `changed_since`, a time in UTC epoch seconds. The list then holds
+only the gifts and pledges that changed at or after that time, in the order they changed, oldest
+change first, by `last_changed_at`. A gift or pledge removed since that time is listed too, at
+the time it was removed, with only `object`, `id`, `deleted: true` and
+`removed_at`. A list narrowed by `donor_id` lists that donor's removed gifts and pledges. A
+removed gift keeps no type, so a list narrowed by `type` leaves removals out: keep one sync
+without `type` to learn of them. A gift or pledge that moved to another donor, or switched between
+gift and pledge, is listed the same way in a list narrowed by the `donor_id` or `type` it
+left, at the time it changed, unless it matches that list again by then; it stays live in every other
+list, and a list with neither filter never lists it removed. Every page carries `complete_up_to`, the same on every
+page of one walk; start the next sync from it. A gift may appear in two syncs in a row, but none is
+missed.
+
+`changed_since` works with `donor_id` and `type`. With `sort` or `q` it
+returns `400 validation_failed` with `param` naming the parameter it cannot be combined
+with. A time in the future, or anything but a whole number of seconds, returns
+`400 validation_failed` with `param` set to `changed_since`. A cursor sent with a
+different `changed_since` returns `400 invalid_cursor`.
 
 
 Assistant capability: `springiq_list_gifts`. Required permission: Donors (applies when called on behalf of a signed-in person).
@@ -1270,7 +1319,7 @@ await client.Gifts.UpdateAsync(new UpdateGiftV1Request { Id = "id" });
 </details>
 
 ## Payment Schedules
-<details><summary><code>client.PaymentSchedules.<a href="/src/AwardSpring.Net/PaymentSchedules/PaymentSchedulesClient.cs">ListAsync</a>(ListPaymentSchedulesRequest { ... }) -> WithRawResponseTask&lt;PaymentScheduleV1ListResponse&gt;</code></summary>
+<details><summary><code>client.PaymentSchedules.<a href="/src/AwardSpring.Net/PaymentSchedules/PaymentSchedulesClient.cs">ListAsync</a>(ListPaymentSchedulesRequest { ... }) -> Pager&lt;PaymentScheduleV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1453,7 +1502,7 @@ await client.People.RestoreAsync(new RestorePeopleRequest { Id = "id" });
 </dl>
 </details>
 
-<details><summary><code>client.People.<a href="/src/AwardSpring.Net/People/PeopleClient.cs">ListAsync</a>(ListPeopleRequest { ... }) -> WithRawResponseTask&lt;PersonV1ListResponse&gt;</code></summary>
+<details><summary><code>client.People.<a href="/src/AwardSpring.Net/People/PeopleClient.cs">ListAsync</a>(ListPeopleRequest { ... }) -> Pager&lt;PersonV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1519,7 +1568,7 @@ await client.People.ListAsync(new ListPeopleRequest());
 </details>
 
 ## Review Groups
-<details><summary><code>client.ReviewGroups.<a href="/src/AwardSpring.Net/ReviewGroups/ReviewGroupsClient.cs">ListAsync</a>(ListReviewGroupsRequest { ... }) -> WithRawResponseTask&lt;ReviewGroupV1ListResponse&gt;</code></summary>
+<details><summary><code>client.ReviewGroups.<a href="/src/AwardSpring.Net/ReviewGroups/ReviewGroupsClient.cs">ListAsync</a>(ListReviewGroupsRequest { ... }) -> Pager&lt;ReviewGroupV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1578,7 +1627,7 @@ await client.ReviewGroups.ListAsync(
 </details>
 
 ## Reviewer Assignments
-<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListAsync</a>(ListReviewerAssignmentsRequest { ... }) -> WithRawResponseTask&lt;ReviewerAssignmentV1ListResponse&gt;</code></summary>
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListAsync</a>(ListReviewerAssignmentsRequest { ... }) -> Pager&lt;ReviewerAssignmentV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1800,7 +1849,7 @@ await client.ReviewerAssignments.GetJobAsync(
 </dl>
 </details>
 
-<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListJobRowsAsync</a>(ListJobRowsReviewerAssignmentsRequest { ... }) -> WithRawResponseTask&lt;ReviewerAssignmentJobRowV1ListResponse&gt;</code></summary>
+<details><summary><code>client.ReviewerAssignments.<a href="/src/AwardSpring.Net/ReviewerAssignments/ReviewerAssignmentsClient.cs">ListJobRowsAsync</a>(ListJobRowsReviewerAssignmentsRequest { ... }) -> Pager&lt;ReviewerAssignmentJobRowV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -1942,7 +1991,7 @@ await client.Reviewers.CreateAsync(new CreateReviewerV1Request());
 </details>
 
 ## Scholarships
-<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAsync</a>(ListScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipListItemV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAsync</a>(ListScholarshipsRequest { ... }) -> Pager&lt;ScholarshipListItemV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -2218,7 +2267,7 @@ await client.Scholarships.UpdateAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAvailableDollarsAsync</a>(ListAvailableDollarsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;ScholarshipAvailableDollarsV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAvailableDollarsAsync</a>(ListAvailableDollarsScholarshipsRequest { ... }) -> Pager&lt;ScholarshipAvailableDollarsV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -2334,7 +2383,7 @@ await client.Scholarships.GetAvailableDollarsAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAwardedStudentsAsync</a>(ListAwardedStudentsScholarshipsRequest { ... }) -> WithRawResponseTask&lt;AwardedStudentV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Scholarships.<a href="/src/AwardSpring.Net/Scholarships/ScholarshipsClient.cs">ListAwardedStudentsAsync</a>(ListAwardedStudentsScholarshipsRequest { ... }) -> Pager&lt;AwardedStudentV1&gt;</code></summary>
 <dl>
 <dd>
 
@@ -2391,7 +2440,7 @@ await client.Scholarships.ListAwardedStudentsAsync(
 </details>
 
 ## Students
-<details><summary><code>client.Students.<a href="/src/AwardSpring.Net/Students/StudentsClient.cs">ListAsync</a>(ListStudentsRequest { ... }) -> WithRawResponseTask&lt;StudentV1ListResponse&gt;</code></summary>
+<details><summary><code>client.Students.<a href="/src/AwardSpring.Net/Students/StudentsClient.cs">ListAsync</a>(ListStudentsRequest { ... }) -> Pager&lt;StudentV1&gt;</code></summary>
 <dl>
 <dd>
 

@@ -14,6 +14,7 @@ The Awardspring C# library provides convenient access to the Awardspring APIs fr
 - [Usage](#usage)
 - [Environments](#environments)
 - [Exception Handling](#exception-handling)
+- [Pagination](#pagination)
 - [Advanced](#advanced)
   - [Retries](#retries)
   - [Timeouts](#timeouts)
@@ -50,7 +51,12 @@ Instantiate and use the client with the following:
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Donors.ListAsync(new ListDonorsRequest());
+var items = await client.Donors.ListAsync(new ListDonorsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -64,7 +70,12 @@ await client.Donors.GetAsync(new GetDonorsRequest { Id = "id" });
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = "donorId" });
+var items = await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = "donorId" });
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -80,7 +91,12 @@ await client.DonorActivities.GetAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Gifts.ListAsync(new ListGiftsRequest());
+var items = await client.Gifts.ListAsync(new ListGiftsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -94,7 +110,12 @@ await client.Gifts.GetAsync(new GetGiftsRequest { Id = "id" });
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.ListAsync(new ListScholarshipsRequest());
+var items = await client.Scholarships.ListAsync(new ListScholarshipsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -108,9 +129,14 @@ await client.Scholarships.GetAsync(new GetScholarshipsRequest { ScholarshipId = 
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.ListAvailableDollarsAsync(
+var items = await client.Scholarships.ListAvailableDollarsAsync(
     new ListAvailableDollarsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
 );
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -130,16 +156,26 @@ await client.Scholarships.GetAvailableDollarsAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Scholarships.ListAwardedStudentsAsync(
+var items = await client.Scholarships.ListAwardedStudentsAsync(
     new ListAwardedStudentsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
 );
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Students.ListAsync(new ListStudentsRequest());
+var items = await client.Students.ListAsync(new ListStudentsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -153,28 +189,48 @@ await client.Students.GetAsync(new GetStudentsRequest { Id = "id" });
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Applications.ListAsync(new ListApplicationsRequest());
+var items = await client.Applications.ListAsync(new ListApplicationsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Awards.ListAsync(new ListAwardsRequest());
+var items = await client.Awards.ListAsync(new ListAwardsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Funds.ListAsync(new ListFundsRequest());
+var items = await client.Funds.ListAsync(new ListFundsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
+var items = await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -197,37 +253,62 @@ await client.AwardCycles.GetAvailableDollarsSummaryAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.PaymentSchedules.ListAsync(new ListPaymentSchedulesRequest());
+var items = await client.PaymentSchedules.ListAsync(new ListPaymentSchedulesRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.People.ListAsync(new ListPeopleRequest());
+var items = await client.People.ListAsync(new ListPeopleRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.Departments.ListAsync(new ListDepartmentsRequest());
+var items = await client.Departments.ListAsync(new ListDepartmentsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.ReviewGroups.ListAsync(
+var items = await client.ReviewGroups.ListAsync(
     new ListReviewGroupsRequest { AwardCycleId = "award_cycle_id" }
 );
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.ReviewerAssignments.ListAsync(new ListReviewerAssignmentsRequest());
+var items = await client.ReviewerAssignments.ListAsync(new ListReviewerAssignmentsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -243,7 +324,12 @@ await client.ReviewerAssignments.GetJobAsync(
 using AwardSpring.Net;
 
 var client = new AwardspringApiClient("API_KEY");
-await client.ReviewerAssignments.ListJobRowsAsync(new ListJobRowsReviewerAssignmentsRequest());
+var items = await client.ReviewerAssignments.ListJobRowsAsync(new ListJobRowsReviewerAssignmentsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
+}
 ```
 
 ```csharp
@@ -390,6 +476,22 @@ try {
             System.Console.WriteLine($"Request ID: {requestId}");
         }
     }
+}
+```
+
+## Pagination
+
+List endpoints are paginated. The SDK provides an async enumerable so that you can simply loop over the items:
+
+```csharp
+using AwardSpring.Net;
+
+var client = new AwardspringApiClient("API_KEY");
+var items = await client.Applications.ListAsync(new ListApplicationsRequest());
+
+await foreach (var item in items)
+{
+    // do something with item
 }
 ```
 

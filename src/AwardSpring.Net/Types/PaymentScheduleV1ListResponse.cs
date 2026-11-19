@@ -68,10 +68,19 @@ public record PaymentScheduleV1ListResponse : IJsonOnDeserialized
     public int? TotalCount { get; set; }
 
     /// <summary>
+    /// Present only on a list requested with `changed_since`: the time this answer is complete up
+    /// to, in UTC epoch seconds. Every change made before it is in the list, and a change made at or
+    /// after it is not. Every page of one walk carries the same value. Start the next sync with
+    /// `changed_since` set to it. Otherwise the key is omitted.
+    /// </summary>
+    [JsonPropertyName("complete_up_to")]
+    public int? CompleteUpTo { get; set; }
+
+    /// <summary>
     /// The page of items.
     /// </summary>
     [JsonPropertyName("data")]
-    public IEnumerable<PaymentScheduleV1>? Data { get; set; }
+    public IEnumerable<PaymentScheduleV1> Data { get; set; } = new List<PaymentScheduleV1>();
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

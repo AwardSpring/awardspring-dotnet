@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IReviewerAssignmentsClient
@@ -19,7 +21,7 @@ public partial interface IReviewerAssignmentsClient
     ///
     /// Assistant capability: `springiq_list_reviewer_assignments`.
     /// </summary>
-    WithRawResponseTask<ReviewerAssignmentV1ListResponse> ListAsync(
+    Task<Pager<ReviewerAssignmentV1>> ListAsync(
         ListReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -100,7 +102,7 @@ public partial interface IReviewerAssignmentsClient
     /// `job_id` is required and is the job's code from its `status_url`. A code that names no job at your
     /// institution, including another institution's, returns `404 assignment_job_not_found`.
     /// </summary>
-    WithRawResponseTask<ReviewerAssignmentJobRowV1ListResponse> ListJobRowsAsync(
+    Task<Pager<ReviewerAssignmentJobRowV1>> ListJobRowsAsync(
         ListJobRowsReviewerAssignmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

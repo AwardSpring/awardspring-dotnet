@@ -12,7 +12,26 @@ public partial class DepartmentsClient : IDepartmentsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<DepartmentV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the departments of the institution your API key is issued for, in the standard list envelope
+    /// (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`, `data`),
+    /// each with how many differently named scholarships and how many administrators belong to it. Page
+    /// forward by passing the returned `next_cursor` as `starting_after`. `limit` defaults to
+    /// 25 and is capped at 100. Results are ordered by id ascending. Filter with `?q=`
+    /// (case-insensitive substring match on the department name).
+    /// </summary>
+    private WithRawResponseTask<DepartmentV1ListResponse> ListInternalAsync(
+        ListDepartmentsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<DepartmentV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<DepartmentV1ListResponse>> ListInternalAsyncCore(
         ListDepartmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -332,15 +351,38 @@ public partial class DepartmentsClient : IDepartmentsClient
     /// <example><code>
     /// await client.Departments.ListAsync(new ListDepartmentsRequest());
     /// </code></example>
-    public WithRawResponseTask<DepartmentV1ListResponse> ListAsync(
+    public async Task<Pager<DepartmentV1>> ListAsync(
         ListDepartmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<DepartmentV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListDepartmentsRequest,
+            RequestOptions?,
+            DepartmentV1ListResponse,
+            string?,
+            DepartmentV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>

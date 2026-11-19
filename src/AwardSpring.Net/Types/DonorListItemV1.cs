@@ -48,6 +48,17 @@ public record DonorListItemV1 : IJsonOnDeserialized
     public DonorListItemV1Role? Role { get; set; }
 
     /// <summary>
+    /// Whether the donor's record is archived, the way AwardSpring shows it. `true` when the
+    /// account is not active, or when the person is a donor only through an extra Donor role and that role
+    /// is archived; `false` for an active donor, and again once the donor is restored. Archiving and
+    /// restoring each move `last_changed_at`, so a donors list requested with `changed_since`
+    /// lists an archived donor marked `true` and a restored one marked `false`; archiving never
+    /// removes a donor from that list.
+    /// </summary>
+    [JsonPropertyName("archived")]
+    public bool? Archived { get; set; }
+
+    /// <summary>
     /// The donor's level: `Annual`, `Mid`, `Major` or `Principal`. It is the
     /// level the institution's donor portal shows this donor, worked out from the total of every
     /// gift recorded for them: under $1,000 is `Annual`, from $1,000 is `Mid`, from
@@ -89,6 +100,34 @@ public record DonorListItemV1 : IJsonOnDeserialized
     /// </summary>
     [JsonPropertyName("giving_status")]
     public DonorListItemV1GivingStatus? GivingStatus { get; set; }
+
+    /// <summary>
+    /// When anything stored on the donor that the API returns last changed, in UTC epoch seconds: their
+    /// name, contact details, profile, whether their donor record is archived, the tags on them, their answers
+    /// to the school's donor custom fields, or which kinds of email they are opted out of. Renaming a tag, a
+    /// custom field or one of its choices does not count, because it changes the school's list, not the
+    /// donor. Adding the donor counts as
+    /// a change. Gifts, pledges and the figures worked out from them (`level`,
+    /// `lifetime_giving`, `giving_status`, `last_contacted_at`) do not. Use it with
+    /// `changed_since` to pick up only the donors that changed.
+    /// </summary>
+    [JsonPropertyName("last_changed_at")]
+    public int? LastChangedAt { get; set; }
+
+    /// <summary>
+    /// Present, and `true`, only on a donor that was removed. Removed donors appear only in a donors
+    /// list requested with `changed_since`, and carry only `object`, `id`, `deleted`
+    /// and `removed_at`. Otherwise the key is omitted.
+    /// </summary>
+    [JsonPropertyName("deleted")]
+    public bool? Deleted { get; set; }
+
+    /// <summary>
+    /// On a removed donor only: when the donor was removed, in UTC epoch seconds. Otherwise the key is
+    /// omitted.
+    /// </summary>
+    [JsonPropertyName("removed_at")]
+    public int? RemovedAt { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

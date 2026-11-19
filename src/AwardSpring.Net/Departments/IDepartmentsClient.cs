@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IDepartmentsClient
@@ -10,7 +12,7 @@ public partial interface IDepartmentsClient
     /// 25 and is capped at 100. Results are ordered by id ascending. Filter with `?q=`
     /// (case-insensitive substring match on the department name).
     /// </summary>
-    WithRawResponseTask<DepartmentV1ListResponse> ListAsync(
+    Task<Pager<DepartmentV1>> ListAsync(
         ListDepartmentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

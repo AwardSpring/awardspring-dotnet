@@ -1,6 +1,5 @@
 using AwardSpring.Net;
 using AwardSpring.Net.Test.Unit.MockServer;
-using AwardSpring.Net.Test.Utils;
 using NUnit.Framework;
 
 namespace AwardSpring.Net.Test.Unit.MockServer.Applications;
@@ -19,6 +18,7 @@ public class ListTest : BaseMockServerTest
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
               "total_count": 1,
+              "complete_up_to": 1,
               "data": [
                 {
                   "id": "id",
@@ -29,7 +29,13 @@ public class ListTest : BaseMockServerTest
                   "award_cycle_name": "award_cycle_name",
                   "status": "status",
                   "applied_date": 1,
-                  "entry_outcome": "entry_outcome"
+                  "entry_outcome": "entry_outcome",
+                  "entry_answers": [
+                    {}
+                  ],
+                  "majors": [
+                    "majors"
+                  ]
                 }
               ]
             }
@@ -49,7 +55,11 @@ public class ListTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Applications.ListAsync(new ListApplicationsRequest());
-        JsonAssert.AreEqual(response, mockResponse);
+        var items = await Client.Applications.ListAsync(new ListApplicationsRequest());
+        await foreach (var item in items)
+        {
+            Assert.That(item, Is.Not.Null);
+            break; // Only check the first item
+        }
     }
 }

@@ -12,7 +12,21 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<DonorActivityV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Assistant capability: `springiq_list_donor_activities`. Required permission: Donors (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<DonorActivityV1ListResponse> ListInternalAsync(
+        ListDonorActivitiesRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<DonorActivityV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<DonorActivityV1ListResponse>> ListInternalAsyncCore(
         ListDonorActivitiesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -494,15 +508,38 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
     /// <example><code>
     /// await client.DonorActivities.ListAsync(new ListDonorActivitiesRequest { DonorId = "donorId" });
     /// </code></example>
-    public WithRawResponseTask<DonorActivityV1ListResponse> ListAsync(
+    public async Task<Pager<DonorActivityV1>> ListAsync(
         ListDonorActivitiesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<DonorActivityV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListDonorActivitiesRequest,
+            RequestOptions?,
+            DonorActivityV1ListResponse,
+            string?,
+            DonorActivityV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>
@@ -512,7 +549,9 @@ public partial class DonorActivitiesClient : IDonorActivitiesClient
     ///
     ///
     /// Supported activity types: `LoggedEmail`, `LoggedPhone`, `LoggedMeeting`, `LoggedNote`,
-    /// `LoggedPledge`. Gifts are recorded through the Gifts endpoints instead.
+    /// `LoggedPledge`. Gifts are recorded through the Gifts endpoints instead. A pledge for an archived donor,
+    /// whether the account is archived or only its Donor role, returns `400 validation_failed`; restore the
+    /// donor first. Other activity types are recorded for an archived donor.
     ///
     ///
     /// A typical use is working through a call list and logging each conversation as it ends, with the

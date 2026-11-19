@@ -12,6 +12,10 @@ public readonly record struct ListDonorsRequestSort : IStringEnum
 
     public static readonly ListDonorsRequestSort LastContacted = new(Values.LastContacted);
 
+    public static readonly ListDonorsRequestSort LongestSinceContact = new(
+        Values.LongestSinceContact
+    );
+
     public ListDonorsRequestSort(string value)
     {
         Value = value;
@@ -111,5 +115,7 @@ public readonly record struct ListDonorsRequestSort : IStringEnum
         public const string Name = "name";
 
         public const string LastContacted = "last_contacted";
+
+        public const string LongestSinceContact = "longest_since_contact";
     }
 }

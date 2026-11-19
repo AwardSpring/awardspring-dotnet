@@ -21,7 +21,9 @@ public class GetTest : BaseMockServerTest
                 "year_gift_count": 1,
                 "last_gift": 1.1,
                 "last_gift_date": 1,
-                "include_soft_credits": true
+                "include_soft_credits": true,
+                "soft_credit_total": 1.1,
+                "soft_credit_count": 1
               },
               "tags": [
                 "tags"
@@ -39,12 +41,16 @@ public class GetTest : BaseMockServerTest
                   ]
                 }
               ],
+              "email_opt_outs": [
+                "email_opt_outs"
+              ],
               "id": "id",
               "first_name": "first_name",
               "last_name": "last_name",
               "email": "email",
               "phone": "phone",
               "role": "Individual",
+              "archived": true,
               "date_of_birth": 1,
               "birth_month": "birth_month",
               "birth_day": 1,
@@ -72,7 +78,8 @@ public class GetTest : BaseMockServerTest
               "photo_url": "photo_url",
               "description": "description",
               "notes": "notes",
-              "include_soft_credits": true
+              "include_soft_credits": true,
+              "last_changed_at": 1
             }
             """;
 

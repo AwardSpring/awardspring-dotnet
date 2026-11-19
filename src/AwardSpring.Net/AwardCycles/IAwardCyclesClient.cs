@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IAwardCyclesClient
@@ -12,7 +14,7 @@ public partial interface IAwardCyclesClient
     ///
     /// Assistant capability: `springiq_list_award_cycles`.
     /// </summary>
-    WithRawResponseTask<AwardCycleV1ListResponse> ListAsync(
+    Task<Pager<AwardCycleV1>> ListAsync(
         ListAwardCyclesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

@@ -12,7 +12,27 @@ public partial class StudentsClient : IStudentsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<StudentV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns one page at a time, covering every student account at the institution — both
+    /// registered and prospective. Search with `q`: it splits on spaces and matches each
+    /// term against first name, last name, or email. Filter with `student_id` to look a
+    /// student up by the number the institution assigned; numbers are not guaranteed unique, so
+    /// the match can return more than one student.
+    ///
+    /// Assistant capability: `springiq_list_students`. Required permission: Users (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<StudentV1ListResponse> ListInternalAsync(
+        ListStudentsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<StudentV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<StudentV1ListResponse>> ListInternalAsyncCore(
         ListStudentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -656,15 +676,38 @@ public partial class StudentsClient : IStudentsClient
     /// <example><code>
     /// await client.Students.ListAsync(new ListStudentsRequest());
     /// </code></example>
-    public WithRawResponseTask<StudentV1ListResponse> ListAsync(
+    public async Task<Pager<StudentV1>> ListAsync(
         ListStudentsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<StudentV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListStudentsRequest,
+            RequestOptions?,
+            StudentV1ListResponse,
+            string?,
+            StudentV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>

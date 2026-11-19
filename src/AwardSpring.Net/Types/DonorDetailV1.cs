@@ -38,6 +38,16 @@ public record DonorDetailV1 : IJsonOnDeserialized
     public IEnumerable<DonorCustomFieldV1>? CustomFields { get; set; }
 
     /// <summary>
+    /// The kinds of email this donor is opted out of: by their own unsubscribe or spam complaint, by the institution,
+    /// or by the platform after their address bounced, as AwardSpring's donor page shows them. Each is one of
+    /// `campaign`, `newsletter`, `event_invitations` or `giving_renewal_asks`; more may be
+    /// added, so ignore a value you do not recognize. Receipts, thank-you letters and impact reports are always
+    /// sent and never appear. Empty when the donor has opted out of nothing.
+    /// </summary>
+    [JsonPropertyName("email_opt_outs")]
+    public IEnumerable<string>? EmailOptOuts { get; set; }
+
+    /// <summary>
     /// The donor's stored ID: 9 characters, sent exactly as stored. A dry-run create returns
     /// `null`, because no donor was saved.
     /// </summary>
@@ -62,6 +72,17 @@ public record DonorDetailV1 : IJsonOnDeserialized
     /// </summary>
     [JsonPropertyName("role")]
     public DonorDetailV1Role? Role { get; set; }
+
+    /// <summary>
+    /// Whether the donor's record is archived, the way AwardSpring shows it. `true` when the
+    /// account is not active, or when the person is a donor only through an extra Donor role and that role
+    /// is archived; `false` for an active donor, and again once the donor is restored. Archiving and
+    /// restoring each move `last_changed_at`, so a donors list requested with `changed_since`
+    /// lists an archived donor marked `true` and a restored one marked `false`; archiving never
+    /// removes a donor from that list.
+    /// </summary>
+    [JsonPropertyName("archived")]
+    public bool? Archived { get; set; }
 
     [JsonPropertyName("date_of_birth")]
     public int? DateOfBirth { get; set; }
@@ -146,6 +167,18 @@ public record DonorDetailV1 : IJsonOnDeserialized
 
     [JsonPropertyName("include_soft_credits")]
     public bool? IncludeSoftCredits { get; set; }
+
+    /// <summary>
+    /// When anything stored on the donor that the API returns last changed, in UTC epoch seconds: their
+    /// name, contact details, profile, whether their donor record is archived, the tags on them, their answers
+    /// to the school's donor custom fields, or which kinds of email they are opted out of. Renaming a tag, a
+    /// custom field or one of its choices does not count, because it changes the school's list, not the
+    /// donor. Adding the donor counts as
+    /// a change; their gifts and pledges do not. Null only on a dry-run create, because no donor was saved.
+    /// Use it with the donors list's `changed_since` to pick up only the donors that changed.
+    /// </summary>
+    [JsonPropertyName("last_changed_at")]
+    public int? LastChangedAt { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

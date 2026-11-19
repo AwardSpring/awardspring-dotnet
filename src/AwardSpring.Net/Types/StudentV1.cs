@@ -58,6 +58,17 @@ public record StudentV1 : IJsonOnDeserialized
     [JsonPropertyName("created_date")]
     public int? CreatedDate { get; set; }
 
+    /// <summary>
+    /// The options the student picked on the Major question of the current award cycle's general
+    /// application, as the option text, in the order the question lists them. A choice the institution has
+    /// since removed from the question still shows, after the ones it lists. The question can take
+    /// several answers, so this may hold more than one. The options are written by the institution, so
+    /// these are the institution's own words and not a fixed list. Empty when the current cycle has no
+    /// Major question, the student has not answered it, or the institution has no current award cycle.
+    /// </summary>
+    [JsonPropertyName("majors")]
+    public IEnumerable<string>? Majors { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

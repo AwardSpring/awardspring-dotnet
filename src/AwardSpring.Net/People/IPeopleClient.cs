@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IPeopleClient
@@ -44,7 +46,7 @@ public partial interface IPeopleClient
     /// exact id) and `?status=` (`all`, `active` or `archived`; archived accounts are
     /// listed by default, as on the Users list).
     /// </summary>
-    WithRawResponseTask<PersonV1ListResponse> ListAsync(
+    Task<Pager<PersonV1>> ListAsync(
         ListPeopleRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

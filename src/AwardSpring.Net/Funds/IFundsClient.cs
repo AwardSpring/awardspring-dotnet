@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IFundsClient
@@ -11,7 +13,7 @@ public partial interface IFundsClient
     ///
     /// Assistant capability: `springiq_list_funds`. Required permission: Funds (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<FundListItemV1ListResponse> ListAsync(
+    Task<Pager<FundListItemV1>> ListAsync(
         ListFundsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

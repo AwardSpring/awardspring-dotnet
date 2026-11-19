@@ -1,6 +1,5 @@
 using AwardSpring.Net;
 using AwardSpring.Net.Test.Unit.MockServer;
-using AwardSpring.Net.Test.Utils;
 using NUnit.Framework;
 
 namespace AwardSpring.Net.Test.Unit.MockServer.Scholarships;
@@ -19,6 +18,7 @@ public class ListAvailableDollarsTest : BaseMockServerTest
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
               "total_count": 1,
+              "complete_up_to": 1,
               "data": [
                 {
                   "id": "id",
@@ -46,9 +46,13 @@ public class ListAvailableDollarsTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Scholarships.ListAvailableDollarsAsync(
+        var items = await Client.Scholarships.ListAvailableDollarsAsync(
             new ListAvailableDollarsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
         );
-        JsonAssert.AreEqual(response, mockResponse);
+        await foreach (var item in items)
+        {
+            Assert.That(item, Is.Not.Null);
+            break; // Only check the first item
+        }
     }
 }

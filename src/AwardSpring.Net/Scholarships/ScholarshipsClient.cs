@@ -12,7 +12,28 @@ public partial class ScholarshipsClient : IScholarshipsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ScholarshipListItemV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the scholarships belonging to the institution your API key is issued for, in the list
+    /// envelope (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`,
+    /// `data`). Page forward by passing the returned `next_cursor` as `starting_after`;
+    /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
+    /// Results are ordered by scholarship id ascending.
+    /// Filter with `?q=` (case-insensitive substring match on the scholarship name).
+    ///
+    /// Assistant capability: `springiq_list_scholarships`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<ScholarshipListItemV1ListResponse> ListInternalAsync(
+        ListScholarshipsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ScholarshipListItemV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<ScholarshipListItemV1ListResponse>> ListInternalAsyncCore(
         ListScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -647,9 +668,23 @@ public partial class ScholarshipsClient : IScholarshipsClient
         }
     }
 
+    /// <summary>
+    /// Assistant capability: `springiq_get_available_scholarship_dollars`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsInternalAsync(
+        ListAvailableDollarsScholarshipsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse>(
+            ListAvailableDollarsInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
     private async Task<
         WithRawResponse<ScholarshipAvailableDollarsV1ListResponse>
-    > ListAvailableDollarsAsyncCore(
+    > ListAvailableDollarsInternalAsyncCore(
         ListAvailableDollarsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -964,7 +999,23 @@ public partial class ScholarshipsClient : IScholarshipsClient
         }
     }
 
-    private async Task<WithRawResponse<AwardedStudentV1ListResponse>> ListAwardedStudentsAsyncCore(
+    /// <summary>
+    /// Assistant capability: `springiq_get_awarded_students`. Required permission: Scholarships (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsInternalAsync(
+        ListAwardedStudentsScholarshipsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<AwardedStudentV1ListResponse>(
+            ListAwardedStudentsInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<
+        WithRawResponse<AwardedStudentV1ListResponse>
+    > ListAwardedStudentsInternalAsyncCore(
         ListAwardedStudentsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -1136,15 +1187,38 @@ public partial class ScholarshipsClient : IScholarshipsClient
     /// <example><code>
     /// await client.Scholarships.ListAsync(new ListScholarshipsRequest());
     /// </code></example>
-    public WithRawResponseTask<ScholarshipListItemV1ListResponse> ListAsync(
+    public async Task<Pager<ScholarshipListItemV1>> ListAsync(
         ListScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ScholarshipListItemV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListScholarshipsRequest,
+            RequestOptions?,
+            ScholarshipListItemV1ListResponse,
+            string?,
+            ScholarshipListItemV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>
@@ -1270,15 +1344,39 @@ public partial class ScholarshipsClient : IScholarshipsClient
     ///     new ListAvailableDollarsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse> ListAvailableDollarsAsync(
+    public async Task<Pager<ScholarshipAvailableDollarsV1>> ListAvailableDollarsAsync(
         ListAvailableDollarsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ScholarshipAvailableDollarsV1ListResponse>(
-            ListAvailableDollarsAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListAvailableDollarsScholarshipsRequest,
+            RequestOptions?,
+            ScholarshipAvailableDollarsV1ListResponse,
+            string?,
+            ScholarshipAvailableDollarsV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListAvailableDollarsInternalAsync(request, options, cancellationToken)
+                        .WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>
@@ -1312,14 +1410,38 @@ public partial class ScholarshipsClient : IScholarshipsClient
     ///     new ListAwardedStudentsScholarshipsRequest { AwardCycleId = "award_cycle_id" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<AwardedStudentV1ListResponse> ListAwardedStudentsAsync(
+    public async Task<Pager<AwardedStudentV1>> ListAwardedStudentsAsync(
         ListAwardedStudentsScholarshipsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<AwardedStudentV1ListResponse>(
-            ListAwardedStudentsAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListAwardedStudentsScholarshipsRequest,
+            RequestOptions?,
+            AwardedStudentV1ListResponse,
+            string?,
+            AwardedStudentV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListAwardedStudentsInternalAsync(request, options, cancellationToken)
+                        .WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

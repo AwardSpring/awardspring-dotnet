@@ -44,11 +44,26 @@ public record ListDonorsRequest
         new List<ListDonorsRequestGivingStatusItem>();
 
     /// <summary>
-    /// The order to list donors in (`?sort=`): `name` or `last_contacted`. Leave it
-    /// out for the default order. Any other value returns `400 validation_failed`.
+    /// The order to list donors in (`?sort=`): `name`, `last_contacted` or
+    /// `longest_since_contact`. Leave it out for the default order. Any other value returns
+    /// `400 validation_failed`.
     /// </summary>
     [JsonIgnore]
     public ListDonorsRequestSort? Sort { get; set; }
+
+    /// <summary>
+    /// Only donors that changed at or after this time (`?changed_since=`), in UTC epoch seconds, such
+    /// as `1767225600`. The list is then in the order the donors changed, oldest change first, and
+    /// includes donors whose record was archived, marked `archived: true`. With no
+    /// `level` or `giving_status`, it also lists each donor removed since that time, with only
+    /// its `id`, `deleted` and `removed_at`, including a person who stops being a donor but
+    /// keeps their account. Such a person who becomes a donor again is listed again, as a change after the
+    /// removal, with the same `id`. Start the next sync from the list's
+    /// `complete_up_to`. A time in the future, or anything but a whole number of seconds, returns
+    /// `400 validation_failed`. It cannot be combined with `q` or `sort`.
+    /// </summary>
+    [JsonIgnore]
+    public int? ChangedSince { get; set; }
 
     /// <summary>
     /// Page size. Defaults to 25. Values outside 1–100 are clamped rather than rejected.
@@ -57,13 +72,13 @@ public record ListDonorsRequest
     public int? Limit { get; set; }
 
     /// <summary>
-    /// Opaque cursor. Pass the `next_cursor` from the previous page to page forward. Mutually exclusive with `ending_before`; if both are supplied, `starting_after` wins.
+    /// Opaque cursor. Pass the `next_cursor` from the previous page to page forward. Send it or `ending_before`, never both: a request with both returns `400 validation_failed`.
     /// </summary>
     [JsonIgnore]
     public string? StartingAfter { get; set; }
 
     /// <summary>
-    /// Opaque cursor. Pass the `previous_cursor` from the current page to page backward.
+    /// Opaque cursor. Pass the `previous_cursor` from the current page to page backward. Send it or `starting_after`, never both: a request with both returns `400 validation_failed`.
     /// </summary>
     [JsonIgnore]
     public string? EndingBefore { get; set; }

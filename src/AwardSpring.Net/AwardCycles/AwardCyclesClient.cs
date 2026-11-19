@@ -12,7 +12,28 @@ public partial class AwardCyclesClient : IAwardCyclesClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<AwardCycleV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns the award cycles belonging to the institution your API key is issued for, in the list
+    /// envelope (`object: "list"`, `has_more`, `next_cursor`, `previous_cursor`,
+    /// `data`). Page forward by passing the returned `next_cursor` as `starting_after`;
+    /// the last page has `next_cursor: null`. `limit` defaults to 25 and is capped at 100.
+    /// Results are ordered by award-cycle id ascending. Filter with `?q=` (case-insensitive
+    /// substring match on the award-cycle name).
+    ///
+    /// Assistant capability: `springiq_list_award_cycles`.
+    /// </summary>
+    private WithRawResponseTask<AwardCycleV1ListResponse> ListInternalAsync(
+        ListAwardCyclesRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<AwardCycleV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<AwardCycleV1ListResponse>> ListInternalAsyncCore(
         ListAwardCyclesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -475,15 +496,38 @@ public partial class AwardCyclesClient : IAwardCyclesClient
     /// <example><code>
     /// await client.AwardCycles.ListAsync(new ListAwardCyclesRequest());
     /// </code></example>
-    public WithRawResponseTask<AwardCycleV1ListResponse> ListAsync(
+    public async Task<Pager<AwardCycleV1>> ListAsync(
         ListAwardCyclesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<AwardCycleV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListAwardCyclesRequest,
+            RequestOptions?,
+            AwardCycleV1ListResponse,
+            string?,
+            AwardCycleV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 using AwardSpring.Net;
 using AwardSpring.Net.Test.Unit.MockServer;
-using AwardSpring.Net.Test.Utils;
 using NUnit.Framework;
 
 namespace AwardSpring.Net.Test.Unit.MockServer.Donors;
@@ -19,6 +18,7 @@ public class ListTest : BaseMockServerTest
               "next_cursor": "next_cursor",
               "previous_cursor": "previous_cursor",
               "total_count": 1,
+              "complete_up_to": 1,
               "data": [
                 {
                   "id": "id",
@@ -28,10 +28,14 @@ public class ListTest : BaseMockServerTest
                   "organization": "organization",
                   "phone": "phone",
                   "role": "Individual",
+                  "archived": true,
                   "level": "Annual",
                   "last_contacted_at": 1,
                   "lifetime_giving": 1.1,
-                  "giving_status": "Recurring"
+                  "giving_status": "Recurring",
+                  "last_changed_at": 1,
+                  "deleted": true,
+                  "removed_at": 1
                 }
               ]
             }
@@ -46,7 +50,11 @@ public class ListTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.Donors.ListAsync(new ListDonorsRequest());
-        JsonAssert.AreEqual(response, mockResponse);
+        var items = await Client.Donors.ListAsync(new ListDonorsRequest());
+        await foreach (var item in items)
+        {
+            Assert.That(item, Is.Not.Null);
+            break; // Only check the first item
+        }
     }
 }

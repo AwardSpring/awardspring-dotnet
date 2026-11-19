@@ -24,6 +24,7 @@ public class CreateTest : BaseMockServerTest
               "email": "email",
               "phone": "phone",
               "role": "Individual",
+              "archived": true,
               "date_of_birth": 1,
               "birth_month": "birth_month",
               "birth_day": 1,
@@ -51,7 +52,8 @@ public class CreateTest : BaseMockServerTest
               "photo_url": "photo_url",
               "description": "description",
               "notes": "notes",
-              "include_soft_credits": true
+              "include_soft_credits": true,
+              "last_changed_at": 1
             }
             """;
 

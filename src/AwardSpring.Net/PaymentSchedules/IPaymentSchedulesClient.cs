@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IPaymentSchedulesClient
@@ -15,7 +17,7 @@ public partial interface IPaymentSchedulesClient
     ///
     /// Assistant capability: `springiq_list_payment_schedules`.
     /// </summary>
-    WithRawResponseTask<PaymentScheduleV1ListResponse> ListAsync(
+    Task<Pager<PaymentScheduleV1>> ListAsync(
         ListPaymentSchedulesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default

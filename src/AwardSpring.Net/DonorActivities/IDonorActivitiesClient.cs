@@ -1,3 +1,5 @@
+using AwardSpring.Net.Core;
+
 namespace AwardSpring.Net;
 
 public partial interface IDonorActivitiesClient
@@ -5,7 +7,7 @@ public partial interface IDonorActivitiesClient
     /// <summary>
     /// Assistant capability: `springiq_list_donor_activities`. Required permission: Donors (applies when called on behalf of a signed-in person).
     /// </summary>
-    WithRawResponseTask<DonorActivityV1ListResponse> ListAsync(
+    Task<Pager<DonorActivityV1>> ListAsync(
         ListDonorActivitiesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -18,7 +20,9 @@ public partial interface IDonorActivitiesClient
     ///
     ///
     /// Supported activity types: `LoggedEmail`, `LoggedPhone`, `LoggedMeeting`, `LoggedNote`,
-    /// `LoggedPledge`. Gifts are recorded through the Gifts endpoints instead.
+    /// `LoggedPledge`. Gifts are recorded through the Gifts endpoints instead. A pledge for an archived donor,
+    /// whether the account is archived or only its Donor role, returns `400 validation_failed`; restore the
+    /// donor first. Other activity types are recorded for an archived donor.
     ///
     ///
     /// A typical use is working through a call list and logging each conversation as it ends, with the

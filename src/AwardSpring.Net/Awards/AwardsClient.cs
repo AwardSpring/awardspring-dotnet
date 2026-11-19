@@ -12,7 +12,27 @@ public partial class AwardsClient : IAwardsClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<AwardV1ListResponse>> ListAsyncCore(
+    /// <summary>
+    /// Returns one page at a time. Each row names the awarded scholarship and its award cycle,
+    /// and carries the awarded amount and decision date. Without filters the list covers the
+    /// whole institution; narrow it with `user_id` (a student's `id` from the
+    /// Students endpoints) to scope to a single student. Returns `404 student_not_found`,
+    /// naming `user_id` in `param`, when the `user_id` is not a student at this institution.
+    ///
+    /// Assistant capability: `springiq_list_student_awards`. Required permission: Users (applies when called on behalf of a signed-in person).
+    /// </summary>
+    private WithRawResponseTask<AwardV1ListResponse> ListInternalAsync(
+        ListAwardsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return new WithRawResponseTask<AwardV1ListResponse>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<AwardV1ListResponse>> ListInternalAsyncCore(
         ListAwardsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -168,14 +188,37 @@ public partial class AwardsClient : IAwardsClient
     /// <example><code>
     /// await client.Awards.ListAsync(new ListAwardsRequest());
     /// </code></example>
-    public WithRawResponseTask<AwardV1ListResponse> ListAsync(
+    public async Task<Pager<AwardV1>> ListAsync(
         ListAwardsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<AwardV1ListResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListAwardsRequest,
+            RequestOptions?,
+            AwardV1ListResponse,
+            string?,
+            AwardV1
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 }

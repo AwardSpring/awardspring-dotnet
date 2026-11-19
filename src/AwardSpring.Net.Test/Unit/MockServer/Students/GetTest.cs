@@ -20,7 +20,10 @@ public class GetTest : BaseMockServerTest
               "email": "email",
               "student_id": "student_id",
               "enrollment_status": "enrollment_status",
-              "created_date": 1
+              "created_date": 1,
+              "majors": [
+                "majors"
+              ]
             }
             """;
 
